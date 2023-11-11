@@ -9,10 +9,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.3.4"
+    "@headlessui/vue": "^1.7.13",
+    "@heroicons/vue": "^1.0.6",
+    "axios": "^1.5.1",
+    "dayjs": "^1.11.10",
+    "mitt": "^3.0.1",
+    "moment": "^2.29.4",
+    "pinia": "^2.1.6",
+    "vue": "^3.3.4",
+    "vue-router": "^4.0.13"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
     "vite": "^4.4.5"
   }
 }
