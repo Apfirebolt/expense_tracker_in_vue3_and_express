@@ -7,6 +7,7 @@ import connectDB from './server/config/db.js'
 
 import authRoutes from './server/routes/auth.js'
 import expenseRoutes from './server/routes/expense.js'
+import exp from 'constants'
 
 dotenv.config()
 
@@ -59,3 +60,5 @@ app.listen(
     `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
   )
 )
+
+export default app
