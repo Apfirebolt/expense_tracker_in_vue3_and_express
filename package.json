@@ -1,0 +1,45 @@
+{
+  "name": "expense_tracker",
+  "version": "1.0.0",
+  "description": "An expense tracker created in MEVN stack",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "npm run install-client && npm run build",
+    "start": "nodemon index.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently -n 'server,client' -c 'red,green'  \"nodemon server.js\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Apfirebolt/service-desk-management-application-in-express-and-vue.git"
+  },
+  "keywords": [
+    "Service",
+    "Desk",
+    "MEVN"
+  ],
+  "author": "Apfirebolt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Apfirebolt/service-desk-management-application-in-express-and-vue/issues"
+  },
+  "homepage": "https://github.com/Apfirebolt/service-desk-management-application-in-express-and-vue#readme",
+  "dependencies": {
+    "bcryptjs": "*",
+    "connect-history-api-fallback": "*",
+    "dotenv": "*",
+    "express": "*",
+    "express-async-handler": "*",
+    "jsonwebtoken": "*",
+    "mongoose": "*",
+    "morgan": "*",
+    "multer": "*"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
