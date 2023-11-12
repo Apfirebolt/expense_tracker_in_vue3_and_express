@@ -64,23 +64,6 @@ export const useExpense = defineStore("expense", {
       }
     },
 
-    async updateExpense(expenseData) {
-      try {
-        const headers = {
-          Authorization: `Bearer ${auth.authData.token}`,
-        };
-        const response = await httpClient.put(
-          "expense/" + expenseData.id,
-          expenseData,
-          { headers }
-        );
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-        return error;
-      }
-    },
-
     async deleteExpense(expenseId) {
       try {
         const headers = {

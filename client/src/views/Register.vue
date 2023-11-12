@@ -86,8 +86,14 @@ const lastName = ref('');
 const { registerAction } = useAuth();
 
 const handleSubmit = async (e) => {
-    console.log('Calling register action', email.value, password.value, username.value, firstName.value, lastName.value);
     e.preventDefault();
-    await registerAction({ email: email.value, password: password.value, username: username.value, firstName: firstName.value, lastName: lastName.value });
+    let payload = {
+        email: email.value,
+        password: password.value,
+        username: username.value,
+        firstName: firstName.value,
+        lastName: lastName.value
+    };
+    await registerAction(payload);
 };  
 </script>

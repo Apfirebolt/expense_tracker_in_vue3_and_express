@@ -57,7 +57,10 @@ const authData = computed(() => auth.getAuthData);
 
 const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Calling login ', email.value, password.value)
-    await auth.loginAction({ email: email.value, password: password.value });
+    let payload = {
+        email: email.value,
+        password: password.value
+    }
+    await auth.loginAction(payload);
 };  
 </script>

@@ -3,7 +3,7 @@
     <div class="container mx-auto flex flex-col flex-1">
       <div class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:border-none">
         <!-- Search bar -->
-        <div class="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8">
+        <div class="flex-1 px-4 flex justify-between sm:px-6 lg: lg:mx-auto lg:px-8">
           <div class="flex-1 flex">
             <form class="w-full flex md:ml-0" action="#" method="GET">
               <label for="search-field" class="sr-only">Search</label>
@@ -79,10 +79,34 @@
           </div>
         </Dialog>
       </TransitionRoot>
+
+      <TransitionRoot appear :show="isDeleteModalOpened" as="template">
+        <Dialog as="div" @close="closeDeleteModal" class="relative z-10">
+          <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+            leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+            <div class="fixed inset-0 bg-black/25" />
+          </TransitionChild>
+
+          <div class="fixed inset-0 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center">
+              <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+                enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
+                leave-to="opacity-0 scale-95">
+                <DialogPanel
+                  class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <div class="mt-2">
+                    <Confirm @confirm-action="confirmDelete" :message="confirmMessage" @close-modal="closeDeleteModal" />
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </TransitionRoot>
       <main class="flex-1 pb-8">
         <!-- Page header -->
         <div class="bg-white shadow">
-          <div class="px-4 sm:px-6 lg:max-w-6xl lg:mx-auto lg:px-8">
+          <div class="px-4 sm:px-6 lg: lg:mx-auto lg:px-8">
             <div class="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
               <div class="flex-1 min-w-0">
                 <!-- Profile -->
@@ -102,7 +126,7 @@
               <div class="mt-6 flex space-x-3 md:mt-0 md:ml-4">
                 <button type="button" @click="openModal"
                   class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
-                  Add money
+                  Add Expense
                 </button>
               </div>
             </div>
@@ -110,7 +134,7 @@
         </div>
 
         <div class="mt-8">
-          <h2 class="max-w-6xl mx-auto mt-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
+          <h2 class=" mx-auto my-4 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
             Recent activity
           </h2>
 
@@ -125,7 +149,7 @@
                       <span class="flex flex-col text-gray-500 text-sm truncate">
                         <span class="truncate">{{ expense.description }} Joke</span>
                         <span class="text-gray-900 font-medium">{{ expense.amount }}</span>
-                        <time :datetime="expense.createdAt">{{ expense.createdAt }}</time>
+                        <time :datetime="expense.createdAt">{{ showFormattedDate(expense.createdAt) }}</time>
                       </span>
                     </span>
                     <ChevronRightIcon class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -151,7 +175,7 @@
 
           <!-- Activity table (small breakpoint and up) -->
           <div class="hidden sm:block">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto px-4 sm:px-6 lg:px-8">
               <div class="flex flex-col mt-2">
                 <div class="align-middle min-w-full overflow-x-auto shadow overflow-hidden sm:rounded-lg">
                   <table class="min-w-full divide-y divide-gray-200">
@@ -172,6 +196,10 @@
                         <th
                           class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Date
+                        </th>
+                        <th
+                          class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
                         </th>
                       </tr>
                     </thead>
@@ -196,7 +224,10 @@
                           </span>
                         </td>
                         <td class="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
-                          <time :datetime="expense.createdAt">{{ expense.createdAt }}</time>
+                          <time :datetime="expense.createdAt">{{ showFormattedDate(expense.createdAt) }}</time>
+                        </td>
+                        <td class="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
+                          <TrashIcon @click="openDeleteModal(expense)" class="h-5 w-5 text-red-400 hover:text-gray-500 cursor-pointer" aria-hidden="true" />
                         </td>
                       </tr>
                     </tbody>
@@ -233,6 +264,8 @@
                     </div>
                   </nav>
                 </div>
+
+                {{ selectedItem }}
               </div>
             </div>
           </div>
@@ -246,7 +279,9 @@
 import { onMounted, computed, ref } from 'vue'
 import { useAuth } from '../store/auth'
 import { useExpense } from '../store/expense';
+import dayjs from 'dayjs';
 import ExpenseForm from '../components/ExpenseForm.vue'
+import Confirm from '../components/Confirm.vue';
 import {
   Dialog,
   DialogOverlay,
@@ -261,11 +296,7 @@ import {
 } from '@headlessui/vue'
 import {
   BellIcon,
-  CogIcon,
   MenuAlt1Icon,
-  QuestionMarkCircleIcon,
-  ScaleIcon,
-  ShieldCheckIcon,
   XIcon,
 } from '@heroicons/vue/outline'
 import {
@@ -275,27 +306,13 @@ import {
   ChevronRightIcon,
   OfficeBuildingIcon,
   SearchIcon,
+  TrashIcon,
 } from '@heroicons/vue/solid'
-
-const secondaryNavigation = [
-  { name: 'Settings', href: '#', icon: CogIcon },
-  { name: 'Help', href: '#', icon: QuestionMarkCircleIcon },
-  { name: 'Privacy', href: '#', icon: ShieldCheckIcon },
-]
-const cards = [
-  { name: 'Account balance', href: '#', icon: ScaleIcon, amount: '$30,659.45' },
-  // More items...
-]
-
-const statusStyles = {
-  success: 'bg-green-100 text-green-800',
-  processing: 'bg-yellow-100 text-yellow-800',
-  failed: 'bg-gray-100 text-gray-800',
-}
 
 export default {
   components: {
     ExpenseForm,
+    Confirm,
     Dialog,
     DialogOverlay,
     Menu,
@@ -312,6 +329,7 @@ export default {
     MenuAlt1Icon,
     OfficeBuildingIcon,
     SearchIcon,
+    TrashIcon,
     XIcon,
     DialogTitle,
     DialogPanel
@@ -322,12 +340,18 @@ export default {
     const auth = useAuth()
 
     const isOpen = ref(false)
+    const isDeleteModalOpened = ref(false)
+    const confirmMessage = ref('')
+    const selectedItem = ref(null)
 
     function closeModal() {
       isOpen.value = false
     }
     function openModal() {
       isOpen.value = true
+    }
+    function closeDeleteModal() {
+      isDeleteModalOpened.value = false
     }
 
     const allExpenses = computed(() => expense.getExpenses)
@@ -355,10 +379,23 @@ export default {
       return total
     })
 
+    const showFormattedDate = (date) => {
+      return dayjs(date).format('MMMM DD, YYYY')
+    }
+
+    const openDeleteModal = (item) => {
+      isDeleteModalOpened.value = true
+      confirmMessage.value = `Are you sure you want to delete ${item.description} expense?`
+      selectedItem.value = item
+    }
+
+    const confirmDelete = async () => {
+      await expense.deleteExpense(selectedItem.value._id)
+      isDeleteModalOpened.value = false
+      expense.getExpensesAction()
+    }
+
     return {
-      secondaryNavigation,
-      cards,
-      statusStyles,
       allExpenses,
       authData,
       isOpen,
@@ -366,7 +403,14 @@ export default {
       openModal,
       addExpenseActionUtil,
       expense,
-      totalAmount
+      totalAmount,
+      showFormattedDate,
+      openDeleteModal,
+      confirmDelete,
+      closeDeleteModal,
+      isDeleteModalOpened,
+      confirmMessage,
+      selectedItem
     }
   },
 }
