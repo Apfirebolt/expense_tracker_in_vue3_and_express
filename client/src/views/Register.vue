@@ -98,10 +98,6 @@ const lastName = ref('');
 const { registerAction } = useAuth();
 const authData = computed(() => auth.getAuthData);
 
-if (authData) {
-    router.push({ name: 'Home' });
-}
-
 const handleSubmit = async (e) => {
     e.preventDefault();
     let payload = {
@@ -115,15 +111,3 @@ const handleSubmit = async (e) => {
     router.push({ name: 'Expense' });
 };  
 </script>
-
-
-
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    let payload = {
-        email: email.value,
-        password: password.value
-    }
-    await auth.loginAction(payload);
-    router.push({ name: 'Home' });
-};  

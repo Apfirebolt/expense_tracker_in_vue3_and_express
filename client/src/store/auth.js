@@ -8,7 +8,7 @@ const toast = useToast();
 
 export const useAuth = defineStore("auth", {
   state: () => ({
-    authData: JSON.parse(localStorage.getItem("user")) || {},
+    authData: JSON.parse(localStorage.getItem("user")) || null,
     loading: ref(false),
   }),
 

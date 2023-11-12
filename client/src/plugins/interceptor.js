@@ -25,7 +25,6 @@ const requestInterceptor = httpClient.interceptors.request.use(
 // Create a response interceptor
 const responseInterceptor = httpClient.interceptors.response.use(
     response => {
-        console.log('Inside response interceptor');
         return response;
     },
     error => {

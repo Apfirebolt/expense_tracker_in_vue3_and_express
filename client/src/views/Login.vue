@@ -65,7 +65,7 @@ const password = ref('');
 const auth = useAuth();
 const authData = computed(() => auth.getAuthData);
 
-if (authData) {
+if (authData.value) {
     router.push({ name: 'Expense' });
 }
 
