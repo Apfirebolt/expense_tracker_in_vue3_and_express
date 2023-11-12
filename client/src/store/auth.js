@@ -18,18 +18,23 @@ export const useAuth = defineStore('auth', {
     },
   
     actions: {
-      async loginAction() {
+      async loginAction(loginData) {
         try {
-          console.log('Inside login action');
+          console.log('Inside login action', loginData);
+          const response = await httpClient.post('auth/login', loginData);
+          console.log(response);
+
         } catch (error) {
           console.log(error)
           return error
         }
       },
 
-      async registerAction() {
+      async registerAction(registerData) {
         try {
-          console.log('Inside register action');
+          console.log('Inside register action', registerData);
+          const response = await httpClient.post('auth/register', registerData);
+          console.log(response);
         } catch (error) {
           console.log(error)
           return error

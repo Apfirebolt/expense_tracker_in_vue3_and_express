@@ -10,13 +10,13 @@
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                <form class="space-y-6" action="#" method="POST">
+                <form class="space-y-6" @submit="handleSubmit">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">
                             Email address
                         </label>
                         <div class="mt-1">
-                            <input id="email" name="email" type="email" autocomplete="email" required=""
+                            <input id="email" name="email" v-model="email" type="email" autocomplete="email" required=""
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                             Username
                         </label>
                         <div class="mt-1">
-                            <input id="username" name="username" type="text" required=""
+                            <input id="username" name="username" v-model="username" type="text" required=""
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                             Password
                         </label>
                         <div class="mt-1">
-                            <input id="password" name="password" type="password" autocomplete="current-password" required=""
+                            <input id="password" name="password" v-model="password" type="password" autocomplete="current-password" required=""
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                             First Name
                         </label>
                         <div class="mt-1">
-                            <input id="firstName" name="firstName" type="text"
+                            <input id="firstName" name="firstName" v-model="firstName" type="text"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                             Last Name
                         </label>
                         <div class="mt-1">
-                            <input id="lastName" name="lastName" type="text"
+                            <input id="lastName" name="lastName" v-model="lastName" type="text"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                     </div>
@@ -74,5 +74,20 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useAuth } from '../store/auth';
 
+const email = ref('');
+const password = ref('');
+const username = ref('');
+const firstName = ref('');
+const lastName = ref('');
+
+const { registerAction } = useAuth();
+
+const handleSubmit = async (e) => {
+    console.log('Calling register action', email.value, password.value, username.value, firstName.value, lastName.value);
+    e.preventDefault();
+    await registerAction({ email: email.value, password: password.value, username: username.value, firstName: firstName.value, lastName: lastName.value });
+};  
 </script>

@@ -32,6 +32,7 @@
     "@babel/preset-env": "^7.23.3",
     "bcryptjs": "*",
     "connect-history-api-fallback": "*",
+    "cors": "^2.8.5",
     "dotenv": "*",
     "express": "*",
     "express-async-handler": "*",

@@ -1,6 +1,7 @@
 import path from 'path'
 import express from 'express'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import morgan from 'morgan'
 import { notFound, errorHandler } from './server/middleware/errorMiddleware.js'
 import connectDB from './server/config/db.js'
@@ -20,6 +21,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json())
+app.use(cors({
+  origin: 'http://localhost:8080'
+}))
 
 const __dirname = path.resolve()
 
