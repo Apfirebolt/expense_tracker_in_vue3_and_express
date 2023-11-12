@@ -251,14 +251,16 @@
                       </p>
                     </div>
                     <div class="flex-1 flex justify-between sm:justify-end">
-                      <a href="#"
+                      <button
+                        @click="goToPreviousPage"
                         class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                         Previous
-                      </a>
-                      <a href="#"
+                    </button>
+                      <button 
+                        @click="goToNextPage"
                         class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                         Next
-                      </a>
+                      </button>
                     </div>
                   </nav>
                 </div>
@@ -346,6 +348,7 @@ export default {
     const isDeleteModalOpened = ref(false)
     const confirmMessage = ref('')
     const selectedItem = ref(null)
+    const currentPage = ref(1)
 
     function closeModal() {
       isOpen.value = false
@@ -405,6 +408,20 @@ export default {
       expense.getExpensesAction()
     }
 
+    const goToNextPage = async () => {
+      if (currentPage.value <= allExpenses.value.lastPage) {
+        currentPage.value += 1
+        await expense.getExpensesAction(currentPage.value)
+      }
+    }
+
+    const goToPreviousPage = async () => {
+      if (currentPage.value > 0) {
+        currentPage.value -= 1
+        await expense.getExpensesAction(currentPage.value)
+      }
+    }
+
     return {
       allExpenses,
       authData,
@@ -421,7 +438,9 @@ export default {
       isDeleteModalOpened,
       confirmMessage,
       selectedItem,
-      confirmLogout
+      confirmLogout,
+      goToNextPage,
+      goToPreviousPage
     }
   },
 }

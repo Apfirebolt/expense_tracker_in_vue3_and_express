@@ -52,14 +52,15 @@ export const useExpense = defineStore("expense", {
       }
     },
 
-    async getExpensesAction() {
+    async getExpensesAction(page = 1) {
       try {
         const headers = {
           Authorization: `Bearer ${auth.authData.token}`,
         };
-        const response = await httpClient.get("expense", { headers });
+        const response = await httpClient.get("expense?page=" + page, {
+          headers,
+        });
         this.expenses = response.data;
-        console.log(response);
       } catch (error) {
         console.log(error);
         return error
