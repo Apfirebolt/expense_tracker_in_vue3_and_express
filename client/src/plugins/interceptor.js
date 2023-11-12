@@ -44,7 +44,6 @@ const responseInterceptor = httpClient.interceptors.response.use(
         }
         else if (error.response.status === 400) {
             toast.error('Bad request');
-            router.push('/bad-request');
         }
         // Do something with response error
         else {

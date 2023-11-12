@@ -110,7 +110,7 @@
                 <div class="flex items-center">
                   <div>
                     <h1 class="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate">
-                      Good morning, {{ authData.firstName + ' ' + authData.lastName }}
+                      Good morning, {{ authData ? authData.firstName + ' ' + authData.lastName : ''}}
                     </h1>
                     <h2 class="ml-3 text-xl leading-7 text-green-900 sm:leading-9 sm:truncate">
                       Your current balance is Rs <span class="font-semibold bg-gray-200 px-3 py-2"> {{ totalAmount

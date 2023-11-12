@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, defineComponent } from 'vue'
 import { useAuth } from '../store/auth';
 import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
@@ -13,17 +13,22 @@ const routes = [
     {
         path: '/login',
         name: 'Login',
-        component: defineAsyncComponent(() => import('../views/Login.vue'))
+        component: () => import('../views/Login.vue')
     },
     {
         path: '/register',
         name: 'Register',
-        component: defineAsyncComponent(() => import('../views/Register.vue'))
+        component: () => import('../views/Register.vue')
     },
     {
         path: '/expense',
         name: 'Expense',
-        component: defineAsyncComponent(() => import('../views/Expense.vue'))
+        component: () => import('../views/Expense.vue')
+    },
+    {
+        path: '/server-error',
+        name: 'ServerError',
+        component: () => import('../views/ServerError.vue')
     },
     {
         path: '/:catchAll(.*)',
