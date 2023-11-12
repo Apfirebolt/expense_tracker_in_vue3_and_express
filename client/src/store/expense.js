@@ -36,7 +36,7 @@ export const useExpense = defineStore("expense", {
       }
     },
 
-    async getExpense(expenseId) {
+    async getExpenseAction(expenseId) {
       try {
         const response = await httpClient.get("expense/" + expenseId);
         console.log(response);
@@ -46,7 +46,7 @@ export const useExpense = defineStore("expense", {
       }
     },
 
-    async getExpenses() {
+    async getExpensesAction() {
       try {
         const headers = {
           Authorization: `Bearer ${auth.authData.token}`,
