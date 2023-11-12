@@ -1,57 +1,69 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import router from "../routes";
 import httpClient from "../plugins/interceptor";
 
-export const useAuth = defineStore('auth', {
-    state: () => ({
-      authData: ref({}),
-      loading: ref(false),
-    }),
+export const useAuth = defineStore("auth", {
+  state: () => ({
+    authData: JSON.parse(localStorage.getItem("user")) || {},
+    loading: ref(false),
+  }),
 
-    getters: {
-        getAuthData() {
-            return this.authData;
-        },
-        isLoading() {
-            return this.loading;
-        }
+  getters: {
+    getAuthData() {
+      return this.authData;
     },
-  
-    actions: {
-      async loginAction(loginData) {
-        try {
-          console.log('Inside login action', loginData);
-          const response = await httpClient.post('auth/login', loginData);
-          console.log(response);
+    isLoading() {
+      return this.loading;
+    },
+  },
 
-        } catch (error) {
-          console.log(error)
-          return error
-        }
-      },
-
-      async registerAction(registerData) {
-        try {
-          console.log('Inside register action', registerData);
-          const response = await httpClient.post('auth/register', registerData);
-          console.log(response);
-        } catch (error) {
-          console.log(error)
-          return error
-        }
-      },
-
-      async getProfileData() {
-        try {
-          console.log('Inside profile data action');
-        } catch (error) {
-          console.log(error)
-          return error
-        }
-      },
-
-      resetAuth() {
-        this.authData = {};
+  actions: {
+    async loginAction(loginData) {
+      try {
+        const response = await httpClient.post("auth/login", loginData);
+        console.log(response);
+        this.authData = response.data;
+        localStorage.setItem("user", JSON.stringify(response.data));
+      } catch (error) {
+        console.log(error);
+        return error;
       }
     },
-  })
+
+    async registerAction(registerData) {
+      try {
+        const response = await httpClient.post("auth/register", registerData);
+        console.log(response);
+        this.authData = response.data;
+        localStorage.setItem("user", JSON.stringify(response.data));
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    async getProfileData() {
+      try {
+        const headers = {
+          Authorization: `Bearer ${this.authData.token}`,
+        };
+        const response = await httpClient.get("auth/profile", { headers });
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    logout() {
+      this.authData = null;
+      localStorage.removeItem("user");
+      router.push("/login");
+    },
+
+    resetAuth() {
+      this.authData = {};
+    },
+  },
+});

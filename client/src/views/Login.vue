@@ -38,23 +38,26 @@
                         </button>
                     </div>
                 </form>
+
+                {{ authData }}
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useAuth } from '../store/auth';
 
 const email = ref('');
 const password = ref('');
 
-const { loginAction } = useAuth();
+const auth = useAuth();
+const authData = computed(() => auth.getAuthData);
 
 const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Calling login ', email.value, password.value)
-    await loginAction({ email: email.value, password: password.value });
+    await auth.loginAction({ email: email.value, password: password.value });
 };  
 </script>
