@@ -47,6 +47,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuth } from '../store/auth';
+import router from '../routes/index';
 import FooterComponent from '../components/FooterComponent.vue';
 
 const email = ref('');
@@ -55,6 +56,10 @@ const password = ref('');
 const auth = useAuth();
 const authData = computed(() => auth.getAuthData);
 
+if (authData) {
+    router.push({ name: 'Expense' });
+}
+
 const handleSubmit = async (e) => {
     e.preventDefault();
     let payload = {
@@ -62,5 +67,6 @@ const handleSubmit = async (e) => {
         password: password.value
     }
     await auth.loginAction(payload);
+    router.push({ name: 'Expense' });
 };  
 </script>

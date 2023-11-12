@@ -2,7 +2,9 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import httpClient from "../plugins/interceptor";
 import { useAuth } from "./auth";
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const auth = useAuth();
 
 export const useExpense = defineStore("expense", {
@@ -33,7 +35,7 @@ export const useExpense = defineStore("expense", {
         const response = await httpClient.post("expense", expenseData, {
           headers,
         });
-        console.log(response);
+        toast.success("Expense added!");
       } catch (error) {
         console.log(error);
         return error;
@@ -46,7 +48,7 @@ export const useExpense = defineStore("expense", {
         console.log(response);
       } catch (error) {
         console.log(error);
-        return error;
+        
       }
     },
 
@@ -60,7 +62,7 @@ export const useExpense = defineStore("expense", {
         console.log(response);
       } catch (error) {
         console.log(error);
-        return error;
+        return error
       }
     },
 
@@ -72,7 +74,7 @@ export const useExpense = defineStore("expense", {
         const response = await httpClient.delete("expense/" + expenseId, {
           headers,
         });
-        console.log(response);
+        toast.success("Expense deleted!");
       } catch (error) {
         console.log(error);
         return error;

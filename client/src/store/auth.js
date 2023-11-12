@@ -2,6 +2,9 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import router from "../routes";
 import httpClient from "../plugins/interceptor";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 export const useAuth = defineStore("auth", {
   state: () => ({
@@ -22,9 +25,12 @@ export const useAuth = defineStore("auth", {
     async loginAction(loginData) {
       try {
         const response = await httpClient.post("auth/login", loginData);
-        console.log(response);
-        this.authData = response.data;
-        localStorage.setItem("user", JSON.stringify(response.data));
+        if (response.data) {
+          this.authData = response.data;
+          toast.success("Login successful!");
+          localStorage.setItem("user", JSON.stringify(response.data));
+          router.push("/dashboard");
+        }
       } catch (error) {
         console.log(error);
         return error;
@@ -34,9 +40,12 @@ export const useAuth = defineStore("auth", {
     async registerAction(registerData) {
       try {
         const response = await httpClient.post("auth/register", registerData);
-        console.log(response);
-        this.authData = response.data;
-        localStorage.setItem("user", JSON.stringify(response.data));
+        if (response.data) {
+          this.authData = response.data;
+          toast.success("Registration successful!");
+          localStorage.setItem("user", JSON.stringify(response.data));
+          router.push("/dashboard");
+        }
       } catch (error) {
         console.log(error);
         return error;
@@ -49,7 +58,6 @@ export const useAuth = defineStore("auth", {
           Authorization: `Bearer ${this.authData.token}`,
         };
         const response = await httpClient.get("auth/profile", { headers });
-        console.log(response);
       } catch (error) {
         console.log(error);
         return error;
@@ -60,6 +68,7 @@ export const useAuth = defineStore("auth", {
       this.authData = null;
       localStorage.removeItem("user");
       router.push("/login");
+      toast.success("Logout successful!");
     },
 
     resetAuth() {

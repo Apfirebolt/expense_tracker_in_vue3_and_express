@@ -75,8 +75,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useAuth } from '../store/auth';
+import router from '../routes/index';
 import FooterComponent from '../components/FooterComponent.vue';
 
 const email = ref('');
@@ -86,6 +87,11 @@ const firstName = ref('');
 const lastName = ref('');
 
 const { registerAction } = useAuth();
+const authData = computed(() => auth.getAuthData);
+
+if (authData) {
+    router.push({ name: 'Home' });
+}
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,5 +103,18 @@ const handleSubmit = async (e) => {
         lastName: lastName.value
     };
     await registerAction(payload);
+    router.push({ name: 'Expense' });
 };  
 </script>
+
+
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    let payload = {
+        email: email.value,
+        password: password.value
+    }
+    await auth.loginAction(payload);
+    router.push({ name: 'Home' });
+};  
