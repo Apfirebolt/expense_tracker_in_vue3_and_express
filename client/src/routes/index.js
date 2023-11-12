@@ -20,6 +20,11 @@ const routes = [
         component: defineAsyncComponent(() => import('../views/Register.vue'))
     },
     {
+        path: '/expense',
+        name: 'Expense',
+        component: defineAsyncComponent(() => import('../views/Expense.vue'))
+    },
+    {
         path: '/:catchAll(.*)',
         name: 'NotFound',
         component: NotFound
