@@ -16,7 +16,7 @@
                             Email address
                         </label>
                         <div class="mt-1">
-                            <input id="email" name="email" v-model="email" type="email" autocomplete="email" required=""
+                            <input id="email" name="email" v-model="email" type="email" required=""
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                             Password
                         </label>
                         <div class="mt-1">
-                            <input id="password" name="password" v-model="password" type="password" autocomplete="current-password" required=""
+                            <input id="password" name="password" v-model="password" type="password" required=""
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                     </div>
@@ -38,16 +38,16 @@
                         </button>
                     </div>
                 </form>
-
-                {{ authData }}
             </div>
         </div>
     </div>
+    <FooterComponent />
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuth } from '../store/auth';
+import FooterComponent from '../components/FooterComponent.vue';
 
 const email = ref('');
 const password = ref('');

@@ -45,9 +45,10 @@
                     Profile</a>
                   </MenuItem>
                   <MenuItem v-slot="{ active }">
-                  <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
+                  <router-link to="/"
+                    :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Home</router-link>
                   </MenuItem>
-                  <MenuItem v-slot="{ active }">
+                  <MenuItem @click.prevent="confirmLogout" v-slot="{ active }">
                   <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Logout</a>
                   </MenuItem>
                 </MenuItems>
@@ -112,14 +113,13 @@
                 <!-- Profile -->
                 <div class="flex items-center">
                   <div>
-                    <div class="flex items-center">
-                      <img class="h-16 w-16 rounded-full sm:hidden"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
-                        alt="" />
-                      <h1 class="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate">
-                        Good morning, {{ authData.firstName + ' ' + authData.lastName }}
-                      </h1>
-                    </div>
+                    <h1 class="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate">
+                      Good morning, {{ authData.firstName + ' ' + authData.lastName }}
+                    </h1>
+                    <h2 class="ml-3 text-xl leading-7 text-green-900 sm:leading-9 sm:truncate">
+                      Your current balance is Rs <span class="font-semibold bg-gray-200 px-3 py-2"> {{ totalAmount
+                      }}</span>
+                    </h2>
                   </div>
                 </div>
               </div>
@@ -207,9 +207,10 @@
                       <tr v-for="expense in allExpenses.data" :key="expense._id" class="bg-white">
                         <td class="max-w-0 w-full px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           <div class="flex">
-                            <CashIcon class="flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                            <PlusIcon v-if="expense.type === 'credit'" class="flex-shrink-0 h-6 w-6 text-green-500"
                               aria-hidden="true" />
-                            <p class="text-gray-500 truncate group-hover:text-gray-900">
+                            <MinusIcon v-else class="flex-shrink-0 h-6 w-6 text-red-500" aria-hidden="true" />
+                            <p class="text-gray-500 truncate group-hover:text-gray-900 mx-3">
                               {{ expense.description }}
                             </p>
                           </div>
@@ -227,7 +228,8 @@
                           <time :datetime="expense.createdAt">{{ showFormattedDate(expense.createdAt) }}</time>
                         </td>
                         <td class="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
-                          <TrashIcon @click="openDeleteModal(expense)" class="h-5 w-5 text-red-400 hover:text-gray-500 cursor-pointer" aria-hidden="true" />
+                          <TrashIcon @click="openDeleteModal(expense)"
+                            class="h-5 w-5 text-red-400 hover:text-gray-500 cursor-pointer" aria-hidden="true" />
                         </td>
                       </tr>
                     </tbody>
@@ -264,8 +266,6 @@
                     </div>
                   </nav>
                 </div>
-
-                {{ selectedItem }}
               </div>
             </div>
           </div>
@@ -273,6 +273,7 @@
       </main>
     </div>
   </div>
+  <FooterComponent />
 </template>
   
 <script>
@@ -281,6 +282,7 @@ import { useAuth } from '../store/auth'
 import { useExpense } from '../store/expense';
 import dayjs from 'dayjs';
 import ExpenseForm from '../components/ExpenseForm.vue'
+import FooterComponent from '../components/FooterComponent.vue';
 import Confirm from '../components/Confirm.vue';
 import {
   Dialog,
@@ -307,6 +309,8 @@ import {
   OfficeBuildingIcon,
   SearchIcon,
   TrashIcon,
+  PlusIcon,
+  MinusIcon
 } from '@heroicons/vue/solid'
 
 export default {
@@ -323,6 +327,8 @@ export default {
     TransitionRoot,
     BellIcon,
     CashIcon,
+    PlusIcon,
+    MinusIcon,
     CheckCircleIcon,
     ChevronDownIcon,
     ChevronRightIcon,
@@ -332,7 +338,8 @@ export default {
     TrashIcon,
     XIcon,
     DialogTitle,
-    DialogPanel
+    DialogPanel,
+    FooterComponent
   },
   setup() {
 
@@ -367,17 +374,24 @@ export default {
       expense.getExpensesAction()
     }
 
+    const confirmLogout = async () => {
+      await auth.logout()
+    }
+
     const totalAmount = computed(() => {
       let total = 0
-      allExpenses.value.data.forEach(expense => {
-        if (expense.type === 'credit') {
-          total += expense.amount
-        } else {
-          total -= expense.amount
-        }
-      })
+      allExpenses.value &&
+        allExpenses.value.data &&
+        allExpenses.value.data.forEach((expense) => {
+          if (expense.type === 'credit') {
+            total += expense.amount
+          } else {
+            total -= expense.amount
+          }
+        })
       return total
     })
+
 
     const showFormattedDate = (date) => {
       return dayjs(date).format('MMMM DD, YYYY')
@@ -410,7 +424,8 @@ export default {
       closeDeleteModal,
       isDeleteModalOpened,
       confirmMessage,
-      selectedItem
+      selectedItem,
+      confirmLogout
     }
   },
 }
