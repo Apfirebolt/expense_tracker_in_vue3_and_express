@@ -27,9 +27,13 @@ export const useExpense = defineStore("expense", {
   actions: {
     async addExpense(expenseData) {
       try {
-        const response = await httpClient.post("expense", expenseData);
+        const headers = {
+          Authorization: `Bearer ${auth.authData.token}`,
+        };
+        const response = await httpClient.post("expense", expenseData, {
+          headers,
+        });
         console.log(response);
-        
       } catch (error) {
         console.log(error);
         return error;
@@ -52,6 +56,7 @@ export const useExpense = defineStore("expense", {
           Authorization: `Bearer ${auth.authData.token}`,
         };
         const response = await httpClient.get("expense", { headers });
+        this.expenses = response.data;
         console.log(response);
       } catch (error) {
         console.log(error);
@@ -77,20 +82,19 @@ export const useExpense = defineStore("expense", {
     },
 
     async deleteExpense(expenseId) {
-        try {
-          const headers = {
-            Authorization: `Bearer ${auth.authData.token}`,
-          };
-          const response = await httpClient.delete(
-            "expense/" + expenseId,
-            { headers }
-          );
-          console.log(response);
-        } catch (error) {
-          console.log(error);
-          return error;
-        }
-      },
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.token}`,
+        };
+        const response = await httpClient.delete("expense/" + expenseId, {
+          headers,
+        });
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
 
     resetExpenseData() {
       this.expense = {};

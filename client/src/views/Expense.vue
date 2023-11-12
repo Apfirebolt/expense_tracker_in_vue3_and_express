@@ -59,6 +59,29 @@
           </div>
         </div>
       </div>
+      <TransitionRoot appear :show="isOpen" as="template">
+        <Dialog as="div" @close="closeModal" class="relative z-10">
+          <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
+            leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+            <div class="fixed inset-0 bg-black/25" />
+          </TransitionChild>
+
+          <div class="fixed inset-0 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center">
+              <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+                enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100"
+                leave-to="opacity-0 scale-95">
+                <DialogPanel
+                  class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <div class="mt-2">
+                    <ExpenseForm @add-expense-action="addExpenseActionUtil" @close-modal="closeModal" />
+                  </div>
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+        </Dialog>
+      </TransitionRoot>
       <main class="flex-1 pb-8">
         <!-- Page header -->
         <div class="bg-white shadow">
@@ -83,7 +106,7 @@
                 </div>
               </div>
               <div class="mt-6 flex space-x-3 md:mt-0 md:ml-4">
-                <button type="button"
+                <button type="button" @click="openModal"
                   class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                   Add money
                 </button>
@@ -259,15 +282,18 @@
             </div>
           </div>
         </div>
+
+        {{ allExpenses }}
       </main>
     </div>
   </div>
 </template>
   
 <script>
-import { onMounted, computed } from 'vue'
-import { useExpense } from '../store/expense'
+import { onMounted, computed, ref } from 'vue'
 import { useAuth } from '../store/auth'
+import { useExpense } from '../store/expense';
+import ExpenseForm from '../components/ExpenseForm.vue'
 import {
   Dialog,
   DialogOverlay,
@@ -277,6 +303,8 @@ import {
   MenuItems,
   TransitionChild,
   TransitionRoot,
+  DialogTitle,
+  DialogPanel
 } from '@headlessui/vue'
 import {
   BellIcon,
@@ -326,6 +354,7 @@ const statusStyles = {
 
 export default {
   components: {
+    ExpenseForm,
     Dialog,
     DialogOverlay,
     Menu,
@@ -343,11 +372,22 @@ export default {
     OfficeBuildingIcon,
     SearchIcon,
     XIcon,
+    DialogTitle,
+    DialogPanel
   },
   setup() {
 
     const expense = useExpense()
     const auth = useAuth()
+
+    const isOpen = ref(false)
+
+    function closeModal() {
+      isOpen.value = false
+    }
+    function openModal() {
+      isOpen.value = true
+    }
 
     const allExpenses = computed(() => expense.getExpenses)
     const authData = computed(() => auth.getAuthData)
@@ -356,6 +396,12 @@ export default {
       await expense.getExpensesAction()
     })
 
+    const addExpenseActionUtil = async (payload) => {
+      await expense.addExpense(payload)
+      closeModal()
+      expense.getExpensesAction()
+    }
+
     return {
       secondaryNavigation,
       cards,
@@ -363,7 +409,13 @@ export default {
       statusStyles,
       allExpenses,
       authData,
+      isOpen,
+      closeModal,
+      openModal,
+      addExpenseActionUtil,
+      expense
     }
   },
 }
 </script>
+
