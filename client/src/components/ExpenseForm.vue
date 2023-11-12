@@ -32,8 +32,8 @@
                     </div>
 
                     <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700">
-                            Expense Description
+                        <label for="type" class="block text-sm font-medium text-gray-700">
+                            Expense Type
                         </label>
                         <div class="mt-1">
                             <select id="type" name="type" v-model="type" required=""
