@@ -239,7 +239,7 @@
                       <p class="text-sm text-gray-700">
                         Showing
                         {{ ' ' }}
-                        <span class="font-medium">1</span>
+                        <span class="font-medium">{{ showCurrentIndex }}</span>
                         {{ ' ' }}
                         to
                         {{ ' ' }}
@@ -430,6 +430,14 @@ export default {
       }
     }
 
+    const showCurrentIndex = computed(() => {
+      if (currentPage.value === 1) {
+        return 1;
+      } else {
+        return currentPage.value * numberOfItemsPerPage - numberOfItemsPerPage + 1
+      }
+    })
+
     return {
       allExpenses,
       authData,
@@ -451,7 +459,8 @@ export default {
       goToPreviousPage,
       searchText,
       numberOfItemsPerPage,
-      currentPage
+      currentPage,
+      showCurrentIndex
     }
   },
 }

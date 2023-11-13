@@ -13,7 +13,9 @@ const getUserExpenses = asyncHandler(async (req, res) => {
     .limit(itemsPerPage)
     .exec()
     .then(async (expenses) => {
-      const count = await Expense.countDocuments();
+      const count = await Expense.countDocuments({
+        user: req.user._id,
+      })
       res.status(200).json({
         data: expenses,
         total: count,
