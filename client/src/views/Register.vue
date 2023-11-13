@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
-            <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+            <img class="mx-auto h-32 w-48" src="../assets/1.png"
                 alt="Workflow" />
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Sign Up to your account
@@ -41,23 +41,25 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="firstName" class="block text-sm font-medium text-gray-700">
-                            First Name
-                        </label>
-                        <div class="mt-1">
-                            <input id="firstName" name="firstName" v-model="firstName" type="text" placeholder="Enter First Name"
-                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700">
+                                First Name
+                            </label>
+                            <div class="mt-1">
+                                <input id="firstName" name="firstName" v-model="firstName" type="text" placeholder="Enter First Name"
+                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                            </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <label for="lastName" class="block text-sm font-medium text-gray-700">
-                            Last Name
-                        </label>
-                        <div class="mt-1">
-                            <input id="lastName" name="lastName" v-model="lastName" type="text" placeholder="Enter Last Name"
-                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700">
+                                Last Name
+                            </label>
+                            <div class="mt-1">
+                                <input id="lastName" name="lastName" v-model="lastName" type="text" placeholder="Enter Last Name"
+                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                            </div>
                         </div>
                     </div>
 
@@ -84,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useAuth } from '../store/auth';
 import router from '../routes/index';
 import FooterComponent from '../components/FooterComponent.vue';
@@ -96,7 +98,6 @@ const firstName = ref('');
 const lastName = ref('');
 
 const { registerAction } = useAuth();
-const authData = computed(() => auth.getAuthData);
 
 const handleSubmit = async (e) => {
     e.preventDefault();

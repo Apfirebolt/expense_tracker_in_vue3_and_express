@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
-            <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+            <img class="mx-auto h-36 w-48" src="../assets/1.png"
                 alt="Workflow" />
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Add Expense

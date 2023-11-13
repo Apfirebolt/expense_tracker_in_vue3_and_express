@@ -33,7 +33,7 @@ app.use('/api/expense', expenseRoutes)
 let buildLocation = 'client/build'
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '/client/build')))
+  app.use(express.static(path.join(__dirname, '/client/dist')))
 
   app.use((req, res, next) => {
     console.log('This error page')
