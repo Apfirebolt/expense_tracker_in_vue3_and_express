@@ -11,7 +11,7 @@
                 <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none" aria-hidden="true">
                   <SearchIcon class="h-5 w-5" aria-hidden="true" />
                 </div>
-                <input id="search-field" name="search-field"
+                <input id="search-field" name="search-field" v-model="searchText"
                   class="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm"
                   placeholder="Search Expenses" type="search" />
               </div>
@@ -28,6 +28,8 @@
                     {{ authData ? authData.firstName + ' ' + authData.lastName : '' }}
                   </span>
                   <ChevronDownIcon class="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:block" aria-hidden="true" />
+                  <MenuIcon class="flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:hidden"
+                    aria-hidden="true" />
                 </MenuButton>
               </div>
               <transition enter-active-class="transition ease-out duration-100"
@@ -241,7 +243,9 @@
                         {{ ' ' }}
                         to
                         {{ ' ' }}
-                        <span class="font-medium">10</span>
+                        <span class="font-medium">
+                          {{ currentPage * numberOfItemsPerPage < allExpenses.total ? currentPage * numberOfItemsPerPage : allExpenses.total }}
+                        </span>
                         {{ ' ' }}
                         of
                         {{ ' ' }}
@@ -308,7 +312,8 @@ import {
   SearchIcon,
   TrashIcon,
   PlusIcon,
-  MinusIcon
+  MinusIcon,
+  MenuIcon
 } from '@heroicons/vue/solid'
 
 export default {
@@ -325,6 +330,7 @@ export default {
     TransitionRoot,
     BellIcon,
     CashIcon,
+    MenuIcon,
     PlusIcon,
     MinusIcon,
     CheckCircleIcon,
@@ -349,6 +355,8 @@ export default {
     const confirmMessage = ref('')
     const selectedItem = ref(null)
     const currentPage = ref(1)
+    const searchText = ref('')
+    const numberOfItemsPerPage = 5
 
     function closeModal() {
       isOpen.value = false
@@ -440,7 +448,10 @@ export default {
       selectedItem,
       confirmLogout,
       goToNextPage,
-      goToPreviousPage
+      goToPreviousPage,
+      searchText,
+      numberOfItemsPerPage,
+      currentPage
     }
   },
 }
