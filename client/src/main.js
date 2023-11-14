@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import VueSmoothScroll from 'vue3-smooth-scroll'
 import './style.css'
 import router from './routes'
 import App from './App.vue'
@@ -9,6 +10,7 @@ import "vue-toastification/dist/index.css";
 const app = createApp(App)
 app.use(router)
 app.use(createPinia())
+app.use(VueSmoothScroll)
 app.mount('#app');
 
 const options = {
@@ -28,4 +30,3 @@ const options = {
 };
 
 app.use(Toast, options);
-
