@@ -6,11 +6,21 @@ import router from './routes'
 import App from './App.vue'
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+// Swiper imports
+import SwiperClass, { Pagination } from 'swiper'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/css'
+import 'swiper/css/pagination'
+
+
+// Use swiper modules
+SwiperClass.use([Pagination])
 
 const app = createApp(App)
 app.use(router)
 app.use(createPinia())
 app.use(VueSmoothScroll)
+app.use(VueAwesomeSwiper)
 app.mount('#app');
 
 const options = {
