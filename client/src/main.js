@@ -6,6 +6,7 @@ import router from './routes'
 import App from './App.vue'
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import HeaderComponent from './components/HeaderComponent.vue'
 // Swiper imports
 import SwiperClass, { Pagination } from 'swiper'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
@@ -21,6 +22,7 @@ app.use(router)
 app.use(createPinia())
 app.use(VueSmoothScroll)
 app.use(VueAwesomeSwiper)
+app.component('header-component', HeaderComponent)
 app.mount('#app');
 
 const options = {
