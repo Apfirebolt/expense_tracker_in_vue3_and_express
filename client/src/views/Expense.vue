@@ -104,7 +104,7 @@
       </TransitionRoot>
       <main class="flex-1 pb-8">
         <!-- Page header -->
-        <div class="bg-white shadow">
+        <div class="bg-white shadow" data-aos="fade-in">
           <div class="px-4 sm:px-6 lg: lg:mx-auto lg:px-8">
             <div class="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
               <div class="flex-1 min-w-0">
@@ -286,6 +286,7 @@ import dayjs from 'dayjs';
 import ExpenseForm from '../components/ExpenseForm.vue'
 import FooterComponent from '../components/FooterComponent.vue';
 import Confirm from '../components/Confirm.vue';
+import AOS from "aos";
 import {
   Dialog,
   DialogOverlay,
@@ -350,6 +351,7 @@ export default {
     const expense = useExpense()
     const auth = useAuth()
 
+    AOS.init();
     const isOpen = ref(false)
     const isDeleteModalOpened = ref(false)
     const confirmMessage = ref('')

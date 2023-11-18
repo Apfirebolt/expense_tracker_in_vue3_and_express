@@ -12,6 +12,9 @@ import SwiperClass, { Pagination } from 'swiper'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css'
 import 'swiper/css/pagination'
+// AOS imports
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 
 // Use swiper modules
@@ -22,6 +25,7 @@ app.use(router)
 app.use(createPinia())
 app.use(VueSmoothScroll)
 app.use(VueAwesomeSwiper)
+app.use(AOS)
 app.component('header-component', HeaderComponent)
 app.mount('#app');
 

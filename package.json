@@ -30,6 +30,7 @@
   "homepage": "https://github.com/Apfirebolt/service-desk-management-application-in-express-and-vue#readme",
   "dependencies": {
     "@babel/preset-env": "^7.23.3",
+    "aos": "^2.3.4",
     "bcryptjs": "*",
     "connect-history-api-fallback": "*",
     "cors": "^2.8.5",
