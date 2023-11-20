@@ -105,7 +105,7 @@
       </TransitionRoot>
       <main class="flex-1 pb-8">
         <!-- Page header -->
-        <div class="bg-white shadow" data-aos="fade-in">
+        <div class="bg-white shadow" data-aos="zoom-in-left">
           <div class="px-4 sm:px-6 lg: lg:mx-auto lg:px-8">
             <div class="py-6 md:flex md:items-center md:justify-between lg:border-t lg:border-gray-200">
               <div class="flex-1 min-w-0">
@@ -132,7 +132,7 @@
           </div>
         </div>
 
-        <div class="mt-8">
+        <div class="mt-8" data-aos="fade-up-right">
           <h2 class=" mx-auto my-4 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
             Recent activity
           </h2>
@@ -351,8 +351,6 @@ export default {
 
     const expense = useExpense()
     const auth = useAuth()
-
-    AOS.init();
     const isOpen = ref(false)
     const isDeleteModalOpened = ref(false)
     const confirmMessage = ref('')
@@ -375,6 +373,7 @@ export default {
     const authData = computed(() => auth.getAuthData)
 
     onMounted(async () => {
+      AOS.init();
       await expense.getExpensesAction()
     })
 
