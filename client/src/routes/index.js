@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { defineAsyncComponent, defineComponent } from 'vue'
-import { useAuth } from '../store/auth';
 import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 
@@ -24,11 +22,6 @@ const routes = [
         path: '/profile',
         name: 'Profile',
         component: () => import('../views/Profile.vue')
-    },
-    {
-        path: '/validate',
-        name: 'Validate',
-        component: () => import('../views/Validate.vue')
     },
     {
         path: '/expense',

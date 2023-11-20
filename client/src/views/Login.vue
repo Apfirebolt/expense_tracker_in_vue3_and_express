@@ -10,15 +10,18 @@
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                <form class="space-y-6" @submit="handleSubmit">
+                <form class="space-y-6" @submit="onSubmit">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">
-                            Email address
+                            Email address for good
                         </label>
                         <div class="mt-1">
-                            <input id="email" name="email" v-model="email" type="email" required="" placeholder="Enter Email"
+                            <input id="email" v-bind="email" name="email" type="email" placeholder="Enter Email"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
+                        <p class="my-2 text-lg text-red-600">
+                            {{ errors.email  }}
+                        </p>
                     </div>
 
                     <div>
@@ -26,9 +29,13 @@
                             Password
                         </label>
                         <div class="mt-1">
-                            <input id="password" name="password" v-model="password" type="password" required="" placeholder="Enter Password"
+                            <input id="password" v-bind="password" name="password" type="password" placeholder="Enter Password"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
+
+                        <p class="my-2 text-lg text-red-600">
+                            {{ errors.password }}
+                        </p>
                     </div>
 
                     <div>
@@ -54,13 +61,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useAuth } from '../store/auth';
+import { useForm } from 'vee-validate';
 import router from '../routes/index';
 import FooterComponent from '../components/FooterComponent.vue';
-
-const email = ref('');
-const password = ref('');
 
 const auth = useAuth();
 const authData = computed(() => auth.getAuthData);
@@ -69,13 +74,37 @@ if (authData.value) {
     router.push({ name: 'Expense' });
 }
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
-    let payload = {
-        email: email.value,
-        password: password.value
-    }
-    await auth.loginAction(payload);
-    router.push({ name: 'Expense' });
-};  
+// Validation, or use `yup` or `zod`
+function required(value) {
+  return value ? true : 'This field is required';
+}
+
+function passwordRequired(value) {
+  if (!value) {
+    return 'Password is a required field';
+  }  
+  if (value.length < 8) {
+    return 'Password must be at least 8 characters';
+  }
+    return true;
+}
+
+// Create the form
+const { defineInputBinds, handleSubmit, errors } = useForm({
+  validationSchema: {
+    email: required,
+    password: passwordRequired
+  },
+});
+
+// Define fields
+const email = defineInputBinds('email');
+const password = defineInputBinds('password');
+
+// Submit handler
+const onSubmit = handleSubmit(async (values) => {
+  // Submit to API
+  await auth.loginAction(values);
+  router.push({ name: 'Expense' });
+});
 </script>
