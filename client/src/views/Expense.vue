@@ -71,7 +71,7 @@
                 <DialogPanel
                   class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <div class="mt-2">
-                    <ExpenseForm @add-expense-action="addExpenseActionUtil" @close-modal="closeModal" />
+                    <ExpenseForm @add-expense-action="addExpenseActionUtil" @close-modal="closeModal" :errorMessage="errorMessage" />
                   </div>
                 </DialogPanel>
               </TransitionChild>
@@ -146,7 +146,7 @@
                     <span class="flex-1 flex space-x-2 truncate">
                       <CashIcon class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
                       <span class="flex flex-col text-gray-500 text-sm truncate">
-                        <span class="truncate">{{ expense.description }} Joke</span>
+                        <span class="truncate">{{ expense.description }}</span>
                         <span class="text-gray-900 font-medium">{{ expense.amount }}</span>
                         <time :datetime="expense.createdAt">{{ showFormattedDate(expense.createdAt) }}</time>
                       </span>
@@ -354,6 +354,7 @@ export default {
     const isOpen = ref(false)
     const isDeleteModalOpened = ref(false)
     const confirmMessage = ref('')
+    const errorMessage = ref('')
     const selectedItem = ref(null)
     const currentPage = ref(1)
     const searchText = ref('')
@@ -378,6 +379,13 @@ export default {
     })
 
     const addExpenseActionUtil = async (payload) => {
+      // If payload.amount is string return error
+      if (isNaN(payload.amount)) {
+        errorMessage.value = 'Amount should be a number'
+        return
+      } else {
+        errorMessage.value = ''
+      }
       await expense.addExpense(payload)
       closeModal()
       expense.getExpensesAction()
@@ -446,7 +454,8 @@ export default {
       searchText,
       numberOfItemsPerPage,
       currentPage,
-      showCurrentIndex
+      showCurrentIndex,
+      errorMessage
     }
   },
 }
