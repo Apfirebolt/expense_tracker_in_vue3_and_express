@@ -404,14 +404,14 @@ export default {
     }
 
     const goToNextPage = async () => {
-      if (currentPage.value <= allExpenses.value.lastPage) {
+      if (currentPage.value < allExpenses.value.lastPage) {
         currentPage.value += 1
         await expense.getExpensesAction(currentPage.value)
       }
     }
 
     const goToPreviousPage = async () => {
-      if (currentPage.value > 0) {
+      if (currentPage.value > 1) {
         currentPage.value -= 1
         await expense.getExpensesAction(currentPage.value)
       }

@@ -7,19 +7,22 @@ import Expense from "../models/expense.js";
 const getUserExpenses = asyncHandler(async (req, res) => {
   const itemsPerPage = 5;
   const startPage = req.query.page || 1;
-  await Expense.find({ user: req.user._id })
-    // aggregate total sum of expense
-    .populate("user", "firstName lastName")
-    .skip(itemsPerPage * startPage - itemsPerPage)
-    .limit(itemsPerPage)
+  await Expense.aggregate([
+    { $match: { user: req.user._id } },
+    { $group: { _id: null, totalExpense: { $sum: "$amount" } } }
+  ])
     .exec()
-    .then(async (expenses) => {
-      const count = await Expense.countDocuments({
-        user: req.user._id,
-      })
+    .then(async (result) => {
+      const totalExpense = result.length > 0 ? result[0].totalExpense : 0;
+      const expenses = await Expense.find({ user: req.user._id })
+        .populate("user", "firstName lastName")
+        .skip(itemsPerPage * startPage - itemsPerPage)
+        .limit(itemsPerPage)
+        .exec();
+      const count = await Expense.countDocuments({ user: req.user._id });
       res.status(200).json({
         data: expenses,
-        totalExpense: expenses.reduce((acc, item) => acc + item.amount, 0),
+        totalExpense,
         total: count,
         success: true,
         itemsPerPage,
