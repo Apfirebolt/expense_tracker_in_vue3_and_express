@@ -116,8 +116,8 @@
                       Good morning, {{ authData ? authData.firstName + ' ' + authData.lastName : ''}}
                     </h1>
                     <h2 class="ml-3 text-xl leading-7 text-green-900 sm:leading-9 sm:truncate">
-                      Your current balance is Rs <span class="font-semibold bg-gray-200 px-3 py-2"> {{ totalAmount
-                      }}</span>
+                      Your current balance is Rs 
+                      <span class="font-semibold bg-gray-200 px-3 py-2">{{ allExpenses.totalExpense }}</span>
                     </h2>
                   </div>
                 </div>
@@ -387,21 +387,6 @@ export default {
       await auth.logout()
     }
 
-    const totalAmount = computed(() => {
-      let total = 0
-      allExpenses.value &&
-        allExpenses.value.data &&
-        allExpenses.value.data.forEach((expense) => {
-          if (expense.type === 'credit') {
-            total += expense.amount
-          } else {
-            total -= expense.amount
-          }
-        })
-      return total
-    })
-
-
     const showFormattedDate = (date) => {
       return dayjs(date).format('MMMM DD, YYYY')
     }
@@ -448,7 +433,6 @@ export default {
       openModal,
       addExpenseActionUtil,
       expense,
-      totalAmount,
       showFormattedDate,
       openDeleteModal,
       confirmDelete,

@@ -8,6 +8,7 @@ const getUserExpenses = asyncHandler(async (req, res) => {
   const itemsPerPage = 5;
   const startPage = req.query.page || 1;
   await Expense.find({ user: req.user._id })
+    // aggregate total sum of expense
     .populate("user", "firstName lastName")
     .skip(itemsPerPage * startPage - itemsPerPage)
     .limit(itemsPerPage)
@@ -18,6 +19,7 @@ const getUserExpenses = asyncHandler(async (req, res) => {
       })
       res.status(200).json({
         data: expenses,
+        totalExpense: expenses.reduce((acc, item) => acc + item.amount, 0),
         total: count,
         success: true,
         itemsPerPage,

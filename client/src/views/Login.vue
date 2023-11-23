@@ -19,7 +19,7 @@
                             <input id="email" v-bind="email" name="email" type="email" placeholder="Enter Email"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
-                        <p class="my-2 text-lg text-red-600">
+                        <p class="my-2 text-red-800">
                             {{ errors.email  }}
                         </p>
                     </div>
@@ -33,7 +33,7 @@
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
 
-                        <p class="my-2 text-lg text-red-600">
+                        <p class="my-2 text-red-800">
                             {{ errors.password }}
                         </p>
                     </div>
@@ -76,7 +76,7 @@ if (authData.value) {
 
 // Validation, or use `yup` or `zod`
 function required(value) {
-  return value ? true : 'This field is required';
+  return value ? true : 'Email field is required';
 }
 
 function passwordRequired(value) {
@@ -84,7 +84,7 @@ function passwordRequired(value) {
     return 'Password is a required field';
   }  
   if (value.length < 8) {
-    return 'Password must be at least 8 characters';
+    return 'Password is too short';
   }
     return true;
 }
