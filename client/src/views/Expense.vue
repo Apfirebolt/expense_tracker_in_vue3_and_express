@@ -123,6 +123,10 @@
                 </div>
               </div>
               <div class="mt-6 flex space-x-3 md:mt-0 md:ml-4">
+                <button type="button" @click="switchViewMode()"
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                  Calendar View
+                </button>
                 <button type="button" @click="openModal"
                   class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                   Add Expense
@@ -131,8 +135,8 @@
             </div>
           </div>
         </div>
-
-        <div class="mt-8" data-aos="fade-up-right">
+        <ExpenseCalendar v-if="viewMode === 'calendar'" :expenses="allExpenses.data" />
+        <div v-else class="mt-8" data-aos="fade-up-right">
           <h2 class=" mx-auto my-4 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8">
             Recent activity
           </h2>
@@ -273,6 +277,7 @@
             </div>
           </div>
         </div>
+        
       </main>
     </div>
   </div>
@@ -287,6 +292,7 @@ import dayjs from 'dayjs';
 import ExpenseForm from '../components/ExpenseForm.vue'
 import FooterComponent from '../components/FooterComponent.vue';
 import Confirm from '../components/Confirm.vue';
+import ExpenseCalendar from '../components/ExpenseCalendar.vue';
 import AOS from "aos";
 import {
   Dialog,
@@ -321,6 +327,7 @@ import {
 export default {
   components: {
     ExpenseForm,
+    ExpenseCalendar,
     Confirm,
     Dialog,
     DialogOverlay,
@@ -352,6 +359,7 @@ export default {
     const expense = useExpense()
     const auth = useAuth()
     const isOpen = ref(false)
+    const viewMode = ref('normal')
     const isDeleteModalOpened = ref(false)
     const confirmMessage = ref('')
     const errorMessage = ref('')
@@ -433,6 +441,14 @@ export default {
       }
     })
 
+    const switchViewMode = () => {
+      if (viewMode.value === 'normal') {
+        viewMode.value = 'calendar'
+      } else {
+        viewMode.value = 'normal'
+      }
+    }
+
     return {
       allExpenses,
       authData,
@@ -455,7 +471,8 @@ export default {
       numberOfItemsPerPage,
       currentPage,
       showCurrentIndex,
-      errorMessage
+      switchViewMode,
+      viewMode
     }
   },
 }
