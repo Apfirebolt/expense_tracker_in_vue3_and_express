@@ -1,17 +1,17 @@
 <template>
-    <div v-if="expenses.length" class="container bg-gray-100 mx-auto p-3" data-aos="zoom-in-left">
+    <div v-if="expenses.length" class="container bg-gray-100 mx-auto" data-aos="zoom-in-left">
         <div class="flex items-center justify-between bg-gray-200 shadow-md py-3">
-            <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded ml-3" @click="previousMonth">
+            <button className="bg-indigo-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded ml-3" @click="previousMonth">
                 Previous Month
             </button>
             <p className="font-bold text-2xl text-blue-700">
                 {{ currentMonthAndYear }}
             </p>
-            <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded mr-3" @click="nextMonth">
+            <button className="bg-indigo-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded mr-3" @click="nextMonth">
                 Next Month
             </button>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols:4 lg:grid-cols-7 gap-4 my-4">
+        <div className="grid sm:grid-cols-2 md:grid-cols:4 lg:grid-cols-7 gap-4 my-4 items-start">
             <div v-for="(item, index) in monthDays" :key="index"
                 class="shadow-lg rounded-md px-4 py-2 bg-orange-800 text-gray-200 text-semibold text-lg">
                 <p>
@@ -37,7 +37,9 @@ import { ref, onMounted, computed } from "vue";
 import AOS from "aos";
 import dayjs from "dayjs";
 
+// Array stores current month days
 const monthDays = ref([]);
+// Start date of current month
 const startDate = ref(dayjs().startOf("month"));
 const props = defineProps({
     expenses: {
@@ -54,7 +56,7 @@ onMounted(() => {
         let currentDate = startDate.value.add(i, "day");
         let currentObject = {
             date: currentDate.format("MMMM D, YYYY"),
-            tasks: [],
+            expenses: [],
         };
         days.push(currentObject);
     }
@@ -94,6 +96,7 @@ const updateExpenseData = (month) => {
         days.push(currentObject);
     }
 
+    // Find the expenses for each day of the current month
     if (props.expenses.length) {
         props.expenses.forEach((item) => {
             let currentDate = dayjs(item["createdAt"]).format("MMMM D, YYYY");
