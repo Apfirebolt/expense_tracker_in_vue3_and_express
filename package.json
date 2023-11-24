@@ -11,6 +11,8 @@
     "heroku-postbuild": "npm run install-client && npm run build",
     "start": "nodemon index.js",
     "client": "cd client && npm run dev",
+    "build:client": "vite build --outDir dist/client",
+    "build:server": "vite build --outDir dist/server --ssr src/entry-server.js",
     "dev": "concurrently -n 'server,client' -c 'red,green'  \"nodemon index.js\" \"npm run client\""
   },
   "repository": {
