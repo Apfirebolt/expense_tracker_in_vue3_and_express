@@ -1,29 +1,29 @@
 <template>
-    <div v-if="expenses.length" class="container bg-gray-800 mx-auto text-gray-100 p-3" data-aos="zoom-in-left">
-        <h1 class="text-red-400 text-3xl my-3 text-center">SCHEDULER</h1>
+    <div v-if="expenses.length" class="container bg-gray-100 mx-auto p-3" data-aos="zoom-in-left">
+        <h1 class="text-blue-700 text-3xl my-3 text-center">EXPENSE CALENDAR</h1>
         <div class="flex items-center justify-between">
             <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded" @click="previousMonth">
                 Previous Month
             </button>
-            <p className="font-bold text-2xl text-red-400">
+            <p className="font-bold text-2xl text-blue-700">
                 {{ currentMonthAndYear }}
             </p>
             <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded" @click="nextMonth">
                 Next Month
             </button>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols:4 lg:grid-cols-7 px-2 gap-2 my-5">
+        <div className="grid sm:grid-cols-2 md:grid-cols:4 lg:grid-cols-7 px-2 gap-4 my-2">
             <div v-for="(item, index) in monthDays"
-                class="shadow-lg rounded-md px-4 py-2 bg-violet-800 text-gray-200 text-semibold text-lg">
+                class="shadow-lg rounded-md px-4 py-2 bg-orange-800 text-gray-200 text-semibold text-lg">
                 <p>
                     {{ item.date }}
                 </p>
 
                 <div v-for="(expense, index) in item.expenses" :key="index"
-                    class="max-w-sm rounded overflow-hidden shadow-lg bg-gray-800 my-2">
-                    <div class="px-6 py-4">
-                        <div class="font-bold text-xl mb-2">{{ expense.amount }}</div>
-                        <p class="text-gray-100 text-base">
+                    class="max-w-sm rounded overflow-hidden shadow-lg text-gray-700 bg-gray-100 my-2">
+                    <div class="px-2 py-1">
+                        <div class="mb-1">{{ expense.amount }}</div>
+                        <p class="text-base">
                             {{ expense.description }}
                         </p>
                     </div>
