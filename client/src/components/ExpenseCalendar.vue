@@ -1,19 +1,18 @@
 <template>
     <div v-if="expenses.length" class="container bg-gray-100 mx-auto p-3" data-aos="zoom-in-left">
-        <h1 class="text-blue-700 text-3xl my-3 text-center">EXPENSE CALENDAR</h1>
-        <div class="flex items-center justify-between">
-            <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded" @click="previousMonth">
+        <div class="flex items-center justify-between bg-gray-200 shadow-md py-3">
+            <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded ml-3" @click="previousMonth">
                 Previous Month
             </button>
             <p className="font-bold text-2xl text-blue-700">
                 {{ currentMonthAndYear }}
             </p>
-            <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded" @click="nextMonth">
+            <button className="bg-gray-500 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded mr-3" @click="nextMonth">
                 Next Month
             </button>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols:4 lg:grid-cols-7 px-2 gap-4 my-2">
-            <div v-for="(item, index) in monthDays"
+        <div className="grid sm:grid-cols-2 md:grid-cols:4 lg:grid-cols-7 gap-4 my-4">
+            <div v-for="(item, index) in monthDays" :key="index"
                 class="shadow-lg rounded-md px-4 py-2 bg-orange-800 text-gray-200 text-semibold text-lg">
                 <p>
                     {{ item.date }}
