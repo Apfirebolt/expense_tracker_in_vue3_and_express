@@ -30,6 +30,26 @@ const __dirname = path.resolve()
 app.use('/api/auth', authRoutes)
 app.use('/api/expense', expenseRoutes)
 
+app.get('/set-cookie', (req, res) => {
+  const userData = {
+    id: 1,
+    name: 'John Toby',
+    email: 'john@gmail.com'
+  }
+  const cookieName = 'employeeData';
+  const cookieValue = JSON.stringify(userData);
+  const expiresIn = 24 * 60 * 60; // 24 hours
+
+  res.cookie(cookieName, cookieValue, {
+    httpOnly: true, // Prevent client-side JavaScript access
+    secure: true, // Set to true for HTTPS connections
+    maxAge: expiresIn * 1000, // Convert hours to milliseconds
+  });
+
+  res.json({ message: 'Cookie set successfully' });
+})
+
+
 let buildLocation = 'client/build'
 
 if (process.env.NODE_ENV === 'production') {

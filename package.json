@@ -35,6 +35,7 @@
     "aos": "^2.3.4",
     "bcryptjs": "*",
     "connect-history-api-fallback": "*",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "*",
     "express": "*",

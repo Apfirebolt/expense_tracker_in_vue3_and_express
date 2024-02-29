@@ -50,17 +50,6 @@ const props = defineProps({
 
 onMounted(() => {
     AOS.init();
-    let days = [];
-    let daysInCurrentMonth = startDate.value.daysInMonth();
-    for (let i = 0; i < daysInCurrentMonth; i += 1) {
-        let currentDate = startDate.value.add(i, "day");
-        let currentObject = {
-            date: currentDate.format("MMMM D, YYYY"),
-            expenses: [],
-        };
-        days.push(currentObject);
-    }
-    monthDays.value = days;
     updateExpenseData(startDate.value);
 });
 

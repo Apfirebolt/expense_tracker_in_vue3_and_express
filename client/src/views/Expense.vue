@@ -381,6 +381,8 @@ export default {
     const allExpenses = computed(() => expense.getExpenses)
     const authData = computed(() => auth.getAuthData)
 
+    console.log('All expenses ', allExpenses)
+
     onMounted(async () => {
       AOS.init();
       await expense.getExpensesAction()

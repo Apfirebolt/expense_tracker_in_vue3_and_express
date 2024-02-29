@@ -20,6 +20,8 @@ const getUserExpenses = asyncHandler(async (req, res) => {
         .limit(itemsPerPage)
         .exec();
       const count = await Expense.countDocuments({ user: req.user._id });
+      console.log('Sending cookies.. ');
+      res.cookie("totalExpense", totalExpense)
       res.status(200).json({
         data: expenses,
         totalExpense,
