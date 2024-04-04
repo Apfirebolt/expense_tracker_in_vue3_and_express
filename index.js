@@ -30,7 +30,8 @@ const __dirname = path.resolve()
 app.use('/api/auth', authRoutes)
 app.use('/api/expense', expenseRoutes)
 
-app.get('/set-cookie', (req, res) => {
+app.get('/', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   const userData = {
     id: 1,
     name: 'John Toby',
@@ -42,36 +43,18 @@ app.get('/set-cookie', (req, res) => {
 
   res.cookie(cookieName, cookieValue, {
     httpOnly: true, // Prevent client-side JavaScript access
-    secure: true, // Set to true for HTTPS connections
-    maxAge: expiresIn * 1000, // Convert hours to milliseconds
+    expires: new Date(Date.now() + expiresIn * 1000), // Set cookie expiration
   });
 
-  res.json({ message: 'Cookie set successfully' });
+  // Call to the next middleware
+  next()
 })
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+});
 
-let buildLocation = 'client/build'
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '/client/dist')))
-
-  app.use((req, res, next) => {
-    console.log('This error page')
-    const error = new Error('Not Found'); //Error object
-    error.status = 404;
-
-    //res.render('./404'); by default in express applications you would render a 404 page
-
-    res.status(200).sendFile(path.join(__dirname+'/client/build/index.html'));
-
-    next(error);
-
-  });
-} else {
-  app.get('/', (req, res) => {
-    res.send('API is running....')
-  })
-}
+app.use(express.static(path.join(__dirname, '/client/dist')))
 
 app.use(notFound)
 app.use(errorHandler)
