@@ -8,7 +8,6 @@
     "test": "jest --forceExit",
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
-    "heroku-postbuild": "npm run install-client && npm run build",
     "start": "nodemon index.js",
     "client": "cd client && npm run dev",
     "build:client": "vite build --outDir dist/client",
@@ -17,19 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Apfirebolt/service-desk-management-application-in-express-and-vue.git"
+    "url": "https://github.com/Apfirebolt/expense_tracker_in_vue3_and_express"
   },
   "keywords": [
-    "Service",
-    "Desk",
+    "Expense",
+    "Management",
     "MEVN"
   ],
   "author": "Apfirebolt",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Apfirebolt/service-desk-management-application-in-express-and-vue/issues"
-  },
-  "homepage": "https://github.com/Apfirebolt/service-desk-management-application-in-express-and-vue#readme",
   "dependencies": {
     "@babel/preset-env": "^7.23.3",
     "aos": "^2.3.4",

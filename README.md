@@ -1,213 +1,83 @@
-<a name="readme-top"></a>
+## Expense Tracker App in MEVN Stack
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)
+![Express.js](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Headless UI](https://img.shields.io/badge/Headless%20UI-000000?style=for-the-badge&logo=tailwindcss&logoColor=06B6D4)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
+It is an Expense Management application written in MEVN (MongoDB, Express, Vue and Node) stack.
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/Apfirebolt/vue3_pokedex">
-    <img src="screenshots/2.png" alt="Logo" width="80" height="80">
-  </a>
+### Features
 
-  <h3 align="center">Expense Tracker App in Vue 3, Express, Vite using Tailwind CSS and Headless UI</h3>
+- **User Authentication**: Secure login and registration system.
+- **Expense Management**: Add, edit, and delete expenses.
+- **Category Management**: Organize expenses by categories.
+- **Reports and Analytics**: Visualize spending patterns with calendar.
+- **Responsive Design**: Works on both desktop and mobile devices.
 
-  <p align="center">
-    An awesome README template!
-    <br />
-    <a href="https://github.com/Apfirebolt/vue3_pokedex"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/Apfirebolt/vue3_pokedex">View Demo</a>
-    ·
-    <a href="https://github.com/Apfirebolt/vue3_pokedex/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/Apfirebolt/vue3_pokedex/issues">Request Feature</a>
-  </p>
-</div>
+### Technologies Used
 
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
-I created this project to enhance my existing knowledge in Vue 3 especially in using Composition API and Pinia data store. I used this open API which has tons of pokemon data <a href="https://pokeapi.co">https://pokeapi.co</a>
-
-I also used Headless-UI library to add dynamic components like dropdown in this project. For browser-based testing I included Cypress library into this project.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Built With
-
-The project is build using Vue 3 with Vite as bundler. This uses Tailwind CSS for UI and Cypress for testing. Data is coming from PokeAPI.
-
-* [![Vue][Vue.js]][Vue-url]
-* [![Vite][Vite]][vite-url]
-* [![Cypress][cypress]][cypress-url]
-* [![Tailwind][Tailwind]][tailwind-url]
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Project Screenshots
-
-This section would show the screenshots for this project. There are currently 3 images for this project inside the screenshots folder. The screenshots show the Move list page, Pokemon detail page and Move detail page.
-
-![Move list page](screenshots/1.png)
-
-![Pokemon Detail Page](screenshots/2.png)
-
-![Move Detail Page](screenshots/3.png)
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-This is a Vue 3 project powered by Vite. You need to have Node and npm/yarn installed on your system in order to run this project. 
-
-### Prerequisites
-
-Node and NPM. Some knowledge of Javascript and Vue JS would greatly help.
+- **MongoDB**: Database for storing user and expense data.
+- **Express.js**: Backend framework for building the API.
+- **Vue.js**: Frontend framework for building the user interface.
+- **Node.js**: Runtime environment for executing server-side code.
+- **Headless UI**: For dynamic styled components like modal and dropdown.
+- **Tailwind CSS**: For styling
 
 ### Installation
 
-Simple steps to set this thing on your system.
+1. Clone the repository:
+  ```bash
+  git clone https://github.com/yourusername/expense_tracker.git
+  ```
+2. Navigate to the project directory:
+  ```bash
+  cd expense_tracker
+  ```
+3. Install dependencies for both frontend and backend:
+  ```bash
+  npm install
+  cd client
+  npm install
+  cd ..
+  ```
+4. Set up environment variables by creating a `.env` file in the root directory and adding the following:
+  ```
+  MONGODB_URI=your_mongodb_uri
+  JWT_SECRET=your_jwt_secret
+  ```
 
-1. Clone the repo
-   ```sh
-   git clone https://github.com/Apfirebolt/vue3_pokedex.git
-   ```
-2. Install NPM packages
-   ```sh
-   npm install
-   ```
-3. Run the project in development mode on your system
-   ```sh
-   npm run dev
-   ```
-4. Create a production build using Vite
-   ```sh
-   npm run build
-   ```
+### Usage
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+1. Start the backend server:
+  ```bash
+  npm run server
+  ```
+2. Start the frontend development server:
+  ```bash
+  cd client
+  npm run serve
+  ```
+3. Open your browser and navigate to `http://localhost:8080`.
 
-<!-- ROADMAP -->
-## Roadmap
+### Contributing
 
-- [x] Project Prototyping
-- [x] Creation of global components and Pages
-- [x] Introduction of Pinia for store Management
-- [x] Added Cypress for component testing
-- [ ] Advanced Pagination
-- [ ] Addition of More pages for contests, areas and more
+1. Fork the repository.
+2. Create a new branch:
+  ```bash
+  git checkout -b feature-name
+  ```
+3. Make your changes and commit them:
+  ```bash
+  git commit -m 'Add some feature'
+  ```
+4. Push to the branch:
+  ```bash
+  git push origin feature-name
+  ```
+5. Open a pull request.
 
-See the [open issues](https://github.com/Apfirebolt/vue3_pokedex/issues) for a full list of proposed features (and known issues).
+### License
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-There are a lot of API end-points like contests, areas and much more from the PokeAPI open API. There could well be separate pages for these data from the pokemon games.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.md` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Amit Prafulla - [@amitprafull](https://twitter.com/your_username) - aspper20@gmail.com
-
-Project Link: [https://github.com/Apfirebolt/vue3_pokedex](https://github.com/Apfirebolt/vue3_pokedex)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-This project owes its existance to following awesome libraries/resources.
-
-* [Headless UI](https://headlessui.com/)
-* [Img Shields](https://shields.io)
-* [Tailwind UI Components](https://tailwindui.com)
-* [Hero Icons](https://heroicons.com/)
-* [Poke API](https://pokeapi.co/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/Apfirebolt/vue3_pokedex/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/Apfirebolt/vue3_pokedex/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/Apfirebolt/vue3_pokedex/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/Apfirebolt/vue3_pokedex/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/Apfirebolt/vue3_pokedex/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Vite]: https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white
-[vite-url]: https://vitejs.dev/
-[Tailwind]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
-[tailwind-url]: https://tailwindcss.com/
-[cypress]: https://img.shields.io/badge/-cypress-%23E5E5E5?style=for-the-badge&logo=cypress&logoColor=058a5e
-[cypress-url]: https://www.cypress.io/
+This project is licensed under the MIT License.
