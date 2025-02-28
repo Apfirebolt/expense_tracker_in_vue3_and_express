@@ -25,15 +25,24 @@ It is an Expense Management application written in MEVN (MongoDB, Express, Vue a
 - **Headless UI**: For dynamic styled components like modal and dropdown.
 - **Tailwind CSS**: For styling
 
+### Screenshots
+
+Following are some of the screenshots of this app. It shows dashboard for a logged in user and forms for expense as well as the calendar view.
+
+![Dashboard](screenshots/1.png)
+![Add Expense](screenshots/2.png)
+![Calendar View](screenshots/3.png)
+![Profile View](screenshots/4.png)
+
 ### Installation
 
 1. Clone the repository:
   ```bash
-  git clone https://github.com/yourusername/expense_tracker.git
+  git clone https://github.com/Apfirebolt/expense_tracker_in_vue3_and_express
   ```
 2. Navigate to the project directory:
   ```bash
-  cd expense_tracker
+  cd expense_tracker_in_vue3_and_express
   ```
 3. Install dependencies for both frontend and backend:
   ```bash
