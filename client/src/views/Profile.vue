@@ -120,15 +120,6 @@
                                         <div class="flex-grow space-y-6">
                                             <div class="col-span-12 sm:col-span-6">
                                                 <label for="first-name"
-                                                    class="block text-sm font-medium text-gray-700">Username</label>
-                                                <input type="text" name="first-name" id="first-name"
-                                                    autocomplete="given-name"
-                                                    :placeholder="authData.username"
-                                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" />
-                                            </div>
-
-                                            <div class="col-span-12 sm:col-span-6">
-                                                <label for="first-name"
                                                     class="block text-sm font-medium text-gray-700">
                                                     Email</label>
                                                 <input type="text" name="first-name" id="first-name"

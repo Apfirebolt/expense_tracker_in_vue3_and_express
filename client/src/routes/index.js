@@ -2,6 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import NotFound from '../views/NotFound.vue'
 
+const authGuard = (to, from, next) => {
+    const isAuthenticated = localStorage.getItem('user')
+    if (to.name !== 'Login' && to.name !== 'Register' && !isAuthenticated) {
+        next({ name: 'Login' })
+    } else {
+        next()
+    }
+}
+
 const routes = [
     {
         path: '/',
@@ -45,5 +54,6 @@ const router = createRouter({
     routes
 })
 
+router.beforeEach(authGuard)
 
 export default router

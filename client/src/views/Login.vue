@@ -1,8 +1,7 @@
 <template>
     <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
-            <img class="mx-auto h-32 w-48" src="../assets/1.png"
-                alt="Workflow" />
+            <img class="mx-auto h-32 w-48" src="../assets/1.png" alt="Workflow" />
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Sign in to your account
             </h2>
@@ -13,14 +12,14 @@
                 <form class="space-y-6" @submit="onSubmit">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">
-                            Email address for good
+                            Email address
                         </label>
                         <div class="mt-1">
                             <input id="email" v-bind="email" name="email" type="email" placeholder="Enter Email"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
                         <p class="my-2 text-red-800">
-                            {{ errors.email  }}
+                            {{ errors.email }}
                         </p>
                     </div>
 
@@ -29,7 +28,8 @@
                             Password
                         </label>
                         <div class="mt-1">
-                            <input id="password" v-bind="password" name="password" type="password" placeholder="Enter Password"
+                            <input id="password" v-bind="password" name="password" type="password"
+                                placeholder="Enter Password"
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                         </div>
 
@@ -76,25 +76,25 @@ if (authData.value) {
 
 // Validation, or use `yup` or `zod`
 function required(value) {
-  return value ? true : 'Email field is required';
+    return value ? true : 'Email field is required';
 }
 
 function passwordRequired(value) {
-  if (!value) {
-    return 'Password is a required field';
-  }  
-  if (value.length < 8) {
-    return 'Password is too short';
-  }
+    if (!value) {
+        return 'Password is a required field';
+    }
+    if (value.length < 8) {
+        return 'Password is too short';
+    }
     return true;
 }
 
 // Create the form
 const { defineInputBinds, handleSubmit, errors } = useForm({
-  validationSchema: {
-    email: required,
-    password: passwordRequired
-  },
+    validationSchema: {
+        email: required,
+        password: passwordRequired
+    },
 });
 
 // Define fields
@@ -103,8 +103,8 @@ const password = defineInputBinds('password');
 
 // Submit handler
 const onSubmit = handleSubmit(async (values) => {
-  // Submit to API
-  await auth.loginAction(values);
-  router.push({ name: 'Expense' });
+    // Submit to API
+    await auth.loginAction(values);
+    router.push({ name: 'Expense' });
 });
 </script>

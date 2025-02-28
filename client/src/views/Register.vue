@@ -22,16 +22,6 @@
                     </div>
 
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700">
-                            Username
-                        </label>
-                        <div class="mt-1">
-                            <input id="username" name="username" v-model="username" type="text" required="" placeholder="Enter Username"
-                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-                        </div>
-                    </div>
-
-                    <div>
                         <label for="password" class="block text-sm font-medium text-gray-700">
                             Password
                         </label>
@@ -93,7 +83,6 @@ import FooterComponent from '../components/FooterComponent.vue';
 
 const email = ref('');
 const password = ref('');
-const username = ref('');
 const firstName = ref('');
 const lastName = ref('');
 
@@ -104,7 +93,6 @@ const handleSubmit = async (e) => {
     let payload = {
         email: email.value,
         password: password.value,
-        username: username.value,
         firstName: firstName.value,
         lastName: lastName.value
     };
