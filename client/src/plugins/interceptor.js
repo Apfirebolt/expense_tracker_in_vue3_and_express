@@ -33,6 +33,8 @@ const responseInterceptor = httpClient.interceptors.response.use(
             if (error.response.data && error.response.data.message) {
                 message = error.response.data.message;
             }
+            localStorage.removeItem("user");
+            router.push("/login");
             toast.error(message);
         }
         else if (error.response.status === 404) {
