@@ -1,6 +1,6 @@
 <template>
     <header-component />
-    <section class="bg-white shadow sm:rounded-lg" id="about">
+    <section class="bg-neutral shadow sm:rounded-lg" id="about">
         <div class="px-4 py-5 sm:p-6">
             <h2 class="text-3xl my-5 text-center text-red-800">ABOUT</h2>
             <p>

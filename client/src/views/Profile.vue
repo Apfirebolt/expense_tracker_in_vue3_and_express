@@ -2,14 +2,12 @@
   <div class="min-h-full">
     <div class="container mx-auto flex flex-col flex-1">
       <div
-        class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:border-none"
+        class="relative z-10 flex-shrink-0 flex h-16 bg-accent border-b border-gray-200 lg:border-none"
       >
         <!-- Search bar -->
-        <div
-          class="flex-1 px-4 flex justify-between sm:px-6 lg: lg:mx-auto lg:px-8"
-        >
+        <div class="flex justify-between items-center w-full px-6">
           <div class="flex-1 flex">
-            <p>Settings for your profile</p>
+            <p class="text-2xl font-semibold">Settings for your profile</p>
           </div>
           <div class="ml-4 flex items-center md:ml-6">
             <!-- Profile dropdown -->
@@ -84,95 +82,9 @@
           </div>
         </div>
       </div>
-      <TransitionRoot appear :show="isOpen" as="template">
-        <Dialog as="div" @close="closeModal" class="relative z-10">
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0"
-            enter-to="opacity-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100"
-            leave-to="opacity-0"
-          >
-            <div class="fixed inset-0 bg-black/25" />
-          </TransitionChild>
-
-          <div class="fixed inset-0 overflow-y-auto">
-            <div
-              class="flex min-h-full items-center justify-center p-4 text-center"
-            >
-              <TransitionChild
-                as="template"
-                enter="duration-300 ease-out"
-                enter-from="opacity-0 scale-95"
-                enter-to="opacity-100 scale-100"
-                leave="duration-200 ease-in"
-                leave-from="opacity-100 scale-100"
-                leave-to="opacity-0 scale-95"
-              >
-                <DialogPanel
-                  class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
-                >
-                  <div class="mt-2">
-                    <ExpenseForm
-                      @add-expense-action="addExpenseActionUtil"
-                      @close-modal="closeModal"
-                    />
-                  </div>
-                </DialogPanel>
-              </TransitionChild>
-            </div>
-          </div>
-        </Dialog>
-      </TransitionRoot>
-
-      <TransitionRoot appear :show="isDeleteModalOpened" as="template">
-        <Dialog as="div" @close="closeDeleteModal" class="relative z-10">
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0"
-            enter-to="opacity-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100"
-            leave-to="opacity-0"
-          >
-            <div class="fixed inset-0 bg-black/25" />
-          </TransitionChild>
-
-          <div class="fixed inset-0 overflow-y-auto">
-            <div
-              class="flex min-h-full items-center justify-center p-4 text-center"
-            >
-              <TransitionChild
-                as="template"
-                enter="duration-300 ease-out"
-                enter-from="opacity-0 scale-95"
-                enter-to="opacity-100 scale-100"
-                leave="duration-200 ease-in"
-                leave-from="opacity-100 scale-100"
-                leave-to="opacity-0 scale-95"
-              >
-                <DialogPanel
-                  class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
-                >
-                  <div class="mt-2">
-                    <Confirm
-                      @confirm-action="confirmDelete"
-                      :message="confirmMessage"
-                      @close-modal="closeDeleteModal"
-                    />
-                  </div>
-                </DialogPanel>
-              </TransitionChild>
-            </div>
-          </div>
-        </Dialog>
-      </TransitionRoot>
       <main class="relative mt-4">
         <div class="max-w-screen-xl mx-auto pb-6 px-4 sm:px-6 lg:pb-16 lg:px-8">
-          <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="bg-accent rounded-lg shadow overflow-hidden">
             <div
               class="divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x"
             >
@@ -316,81 +228,28 @@
 </template>
 
 <script>
-import { onMounted, computed, ref } from "vue";
+import { computed, ref } from "vue";
 import { useAuth } from "../store/auth";
-import { useExpense } from "../store/expense";
-import dayjs from "dayjs";
-import ExpenseForm from "../components/ExpenseForm.vue";
 import FooterComponent from "../components/FooterComponent.vue";
-import Confirm from "../components/Confirm.vue";
-import AOS from "aos";
-import {
-  Dialog,
-  DialogOverlay,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  TransitionChild,
-  TransitionRoot,
-  DialogTitle,
-  DialogPanel,
-} from "@headlessui/vue";
-import { BellIcon, MenuAlt1Icon, XIcon } from "@heroicons/vue/outline";
-import {
-  CashIcon,
-  CheckCircleIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  OfficeBuildingIcon,
-  SearchIcon,
-  TrashIcon,
-  PlusIcon,
-  MinusIcon,
-  MenuIcon,
-} from "@heroicons/vue/solid";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
+import { ChevronDownIcon, MenuIcon } from "@heroicons/vue/solid";
 
 export default {
   components: {
-    ExpenseForm,
-    Confirm,
-    Dialog,
-    DialogOverlay,
     Menu,
     MenuButton,
     MenuItem,
     MenuItems,
-    TransitionChild,
-    TransitionRoot,
-    BellIcon,
-    CashIcon,
-    MenuIcon,
-    PlusIcon,
-    MinusIcon,
-    CheckCircleIcon,
     ChevronDownIcon,
-    ChevronRightIcon,
-    MenuAlt1Icon,
-    OfficeBuildingIcon,
-    SearchIcon,
-    TrashIcon,
-    XIcon,
-    DialogTitle,
-    DialogPanel,
+    MenuIcon,
     FooterComponent,
   },
   setup() {
-    const expense = useExpense();
     const auth = useAuth();
 
-    AOS.init();
     const isOpen = ref(false);
-    const isDeleteModalOpened = ref(false);
     const confirmMessage = ref("");
     const selectedItem = ref(null);
-    const currentPage = ref(1);
-    const searchText = ref("");
-    const numberOfItemsPerPage = 5;
 
     function closeModal() {
       isOpen.value = false;
@@ -398,104 +257,21 @@ export default {
     function openModal() {
       isOpen.value = true;
     }
-    function closeDeleteModal() {
-      isDeleteModalOpened.value = false;
-    }
 
-    const allExpenses = computed(() => expense.getExpenses);
     const authData = computed(() => auth.getAuthData);
 
-    onMounted(async () => {
-      await expense.getExpensesAction();
-    });
-
-    const addExpenseActionUtil = async (payload) => {
-      await expense.addExpense(payload);
-      closeModal();
-      expense.getExpensesAction();
-    };
-
     const confirmLogout = async () => {
-      await auth.logout();
+      auth.logout();
     };
-
-    const totalAmount = computed(() => {
-      let total = 0;
-      allExpenses.value &&
-        allExpenses.value.data &&
-        allExpenses.value.data.forEach((expense) => {
-          if (expense.type === "credit") {
-            total += expense.amount;
-          } else {
-            total -= expense.amount;
-          }
-        });
-      return total;
-    });
-
-    const showFormattedDate = (date) => {
-      return dayjs(date).format("MMMM DD, YYYY");
-    };
-
-    const openDeleteModal = (item) => {
-      isDeleteModalOpened.value = true;
-      confirmMessage.value = `Are you sure you want to delete ${item.description} expense?`;
-      selectedItem.value = item;
-    };
-
-    const confirmDelete = async () => {
-      await expense.deleteExpense(selectedItem.value._id);
-      isDeleteModalOpened.value = false;
-      expense.getExpensesAction();
-    };
-
-    const goToNextPage = async () => {
-      if (currentPage.value <= allExpenses.value.lastPage) {
-        currentPage.value += 1;
-        await expense.getExpensesAction(currentPage.value);
-      }
-    };
-
-    const goToPreviousPage = async () => {
-      if (currentPage.value > 0) {
-        currentPage.value -= 1;
-        await expense.getExpensesAction(currentPage.value);
-      }
-    };
-
-    const showCurrentIndex = computed(() => {
-      if (currentPage.value === 1) {
-        return 1;
-      } else {
-        return (
-          currentPage.value * numberOfItemsPerPage - numberOfItemsPerPage + 1
-        );
-      }
-    });
 
     return {
-      allExpenses,
       authData,
       isOpen,
       closeModal,
       openModal,
-      addExpenseActionUtil,
-      expense,
-      totalAmount,
-      showFormattedDate,
-      openDeleteModal,
-      confirmDelete,
-      closeDeleteModal,
-      isDeleteModalOpened,
       confirmMessage,
       selectedItem,
       confirmLogout,
-      goToNextPage,
-      goToPreviousPage,
-      searchText,
-      numberOfItemsPerPage,
-      currentPage,
-      showCurrentIndex,
     };
   },
 };

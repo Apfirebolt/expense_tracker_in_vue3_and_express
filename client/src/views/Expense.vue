@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-full">
+  <div class="min-h-full bg-neutral">
     <div class="container mx-auto flex flex-col flex-1">
       <div class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:border-none">
         <!-- Search bar -->
@@ -23,11 +23,11 @@
             <Menu as="div" class="ml-3 relative">
               <div>
                 <MenuButton
-                  class="max-w-xs bg-white rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 lg:p-2 lg:rounded-md lg:hover:bg-gray-50">
-                  <span class="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
+                  class="max-w-xs bg-secondary rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary lg:px-3 lg:py-2 lg:hover:bg-accent text-white hover:text-base transition-all duration-200">
+                  <span class="hidden ml-3 text-sm font-medium lg:block">
                     {{ authData ? authData.firstName + ' ' + authData.lastName : '' }}
                   </span>
-                  <ChevronDownIcon class="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:block" aria-hidden="true" />
+                  <ChevronDownIcon class="hidden flex-shrink-0 ml-1 h-8 w-8 text-white lg:block" aria-hidden="true" />
                   <MenuIcon class="flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:hidden"
                     aria-hidden="true" />
                 </MenuButton>
@@ -37,18 +37,18 @@
                 leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
                 leave-to-class="transform opacity-0 scale-95">
                 <MenuItems
-                  class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-primary ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <MenuItem v-slot="{ active }">
-                  <router-link to="/profile" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your
+                  <router-link to="/profile" :class="[active ? 'bg-secondary' : '', 'block px-4 py-2 text-sm text-white transition-all duration-300']">Your
                     Profile
                   </router-link>
                   </MenuItem>
                   <MenuItem v-slot="{ active }">
                   <router-link to="/"
-                    :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Home</router-link>
+                    :class="[active ? 'bg-secondary' : '', 'block px-4 py-2 text-sm text-white transition-all duration-300']">Home</router-link>
                   </MenuItem>
                   <MenuItem @click.prevent="confirmLogout" v-slot="{ active }">
-                  <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Logout</a>
+                  <a href="#" :class="[active ? 'bg-secondary' : '', 'block px-4 py-2 text-sm text-white transition-all duration-300']">Logout</a>
                   </MenuItem>
                 </MenuItems>
               </transition>
@@ -124,11 +124,11 @@
               </div>
               <div class="mt-6 flex space-x-3 md:mt-0 md:ml-4">
                 <button type="button" @click="switchViewMode()"
-                  class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                   {{ viewMode === 'calendar' ? 'View List' : 'View Calendar'  }}
                 </button>
                 <button type="button" @click="openModal"
-                  class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
                   Add Expense
                 </button>
               </div>
@@ -145,7 +145,7 @@
           <div class="shadow sm:hidden">
             <ul role="list" class="mt-2 divide-y divide-gray-200 overflow-hidden shadow sm:hidden">
               <li v-for="expense in allExpenses.data" :key="expense._id">
-                <a class="block px-4 py-4 bg-white hover:bg-gray-50">
+                <a class="block px-4 py-4 bg-white hover:bg-accent">
                   <span class="flex items-center space-x-4">
                     <span class="flex-1 flex space-x-2 truncate">
                       <CashIcon class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -185,23 +185,23 @@
                     <thead>
                       <tr>
                         <th
-                          class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          class="px-6 py-3 bg-gray-50 text-left font-medium text-gray-500 uppercase tracking-wider">
                           Description
                         </th>
                         <th
-                          class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          class="px-6 py-3 bg-gray-50 text-right font-medium text-gray-500 uppercase tracking-wider">
                           Amount
                         </th>
                         <th
-                          class="hidden px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:block">
+                          class="hidden px-6 py-3 bg-gray-50 text-left font-medium text-gray-500 uppercase tracking-wider md:block">
                           Type
                         </th>
                         <th
-                          class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          class="px-6 py-3 bg-gray-50 text-right font-medium text-gray-500 uppercase tracking-wider">
                           Date
                         </th>
                         <th
-                          class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          class="px-6 py-3 bg-gray-50 text-right font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -212,7 +212,7 @@
                           <div class="flex">
                             <PlusIcon v-if="expense.type === 'credit'" class="flex-shrink-0 h-6 w-6 text-green-500"
                               aria-hidden="true" />
-                            <MinusIcon v-else class="flex-shrink-0 h-6 w-6 text-red-500" aria-hidden="true" />
+                            <MinusIcon v-else class="flex-shrink-0 h-6 w-6 text-secondary" aria-hidden="true" />
                             <p class="text-gray-500 truncate group-hover:text-gray-900 mx-3">
                               {{ expense.description }}
                             </p>
@@ -232,7 +232,7 @@
                         </td>
                         <td class="px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500">
                           <TrashIcon @click="openDeleteModal(expense)"
-                            class="h-5 w-5 text-red-400 hover:text-gray-500 cursor-pointer" aria-hidden="true" />
+                            class="h-5 w-5 text-secondary hover:text-gray-500 cursor-pointer" aria-hidden="true" />
                         </td>
                       </tr>
                     </tbody>
@@ -262,12 +262,12 @@
                     <div class="flex-1 flex justify-between sm:justify-end">
                       <button
                         @click="goToPreviousPage"
-                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary">
                         Previous
                     </button>
                       <button 
                         @click="goToNextPage"
-                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary">
                         Next
                       </button>
                     </div>
