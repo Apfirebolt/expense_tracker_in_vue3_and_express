@@ -27,7 +27,6 @@
   "license": "ISC",
   "dependencies": {
     "@babel/preset-env": "^7.23.3",
-    "aos": "^2.3.4",
     "bcryptjs": "*",
     "connect-history-api-fallback": "*",
     "cors": "^2.8.5",
@@ -37,7 +36,9 @@
     "jsonwebtoken": "*",
     "mongoose": "*",
     "morgan": "*",
-    "multer": "*"
+    "multer": "*",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "babel-jest": "^29.7.0",

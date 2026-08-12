@@ -384,6 +384,7 @@ export default {
     onMounted(async () => {
       AOS.init();
       await expense.getExpensesAction()
+      await expense.getDuplicateExpensesAction()
     })
 
     const addExpenseActionUtil = async (payload) => {

@@ -12,24 +12,24 @@
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "aos": "^2.3.4",
-    "axios": "^1.8.4",
-    "dayjs": "^1.11.13",
-    "express": "^4.21.2",
+    "axios": "^1.19.0",
+    "dayjs": "^1.11.21",
+    "express": "^5.2.1",
     "mitt": "^3.0.1",
-    "pinia": "^3.0.1",
-    "swiper": "^11.2.6",
-    "vee-validate": "^4.15.0",
-    "vue": "^3.5.13",
+    "pinia": "^4.0.3",
+    "swiper": "^14.1.0",
+    "vee-validate": "^4.15.1",
+    "vue": "^3.5.41",
     "vue-awesome-swiper": "^5.0.1",
-    "vue-router": "^4.5.0",
+    "vue-router": "^5.2.0",
     "vue-toastification": "^2.0.0-rc.5",
     "vue3-smooth-scroll": "^0.8.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.3",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.15",
-    "vite": "^6.2.2"
+    "@vitejs/plugin-vue": "^6.0.8",
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.1"
   }
 }

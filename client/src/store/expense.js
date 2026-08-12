@@ -11,6 +11,7 @@ export const useExpense = defineStore("expense", {
   state: () => ({
     expense: ref({}),
     expenses: ref([]),
+    duplicateExpenses: ref({}),
     loading: ref(false),
   }),
 
@@ -48,7 +49,6 @@ export const useExpense = defineStore("expense", {
         console.log(response);
       } catch (error) {
         console.log(error);
-        
       }
     },
 
@@ -79,6 +79,22 @@ export const useExpense = defineStore("expense", {
       } catch (error) {
         console.log(error);
         return error;
+      }
+    },
+
+    async getDuplicateExpensesAction(page = 1) {
+      try {
+        console.log('New experiences')
+        const headers = {
+          Authorization: `Bearer ${auth.authData.token}`,
+        };
+        const response = await httpClient.get("duplicate-expenses?page=" + page, {
+          headers,
+        });
+        this.duplicateExpenses = response.data;
+      } catch (error) {
+        console.log(error);
+        return error
       }
     },
 

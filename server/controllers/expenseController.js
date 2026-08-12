@@ -132,10 +132,32 @@ const getExpense = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Number of duplicate expenses
+// @route   GET /api/duplicate-expenses
+// @access  Private
+const getDuplicateExpenses = asyncHandler(async (req, res, next) => {
+
+    await Expense.find({})
+    .exec()
+    .then(async (result) => {
+      const totalExpense = result.length > 0 ? result[0].totalExpense : 0;
+      const count = await Expense.countDocuments({ });
+      res.status(200).json({
+        totalExpense,
+        total: count,
+        success: true,
+      });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+});
+
 export {
   getUserExpenses,
   createExpense,
   updateExpense,
   deleteExpense,
   getExpense,
+  getDuplicateExpenses
 };
