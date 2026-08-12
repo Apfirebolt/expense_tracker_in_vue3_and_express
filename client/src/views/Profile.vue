@@ -1,248 +1,222 @@
 <template>
-  <div class="min-h-full">
-    <div class="container mx-auto flex flex-col flex-1">
-      <div
-        class="relative z-10 flex-shrink-0 flex h-16 bg-accent border-b border-gray-200 lg:border-none"
-      >
-        <!-- Search bar -->
-        <div class="flex justify-between items-center w-full px-6">
-          <div class="flex-1 flex">
-            <p class="text-2xl font-semibold">Settings for your profile</p>
+  <div class="min-h-screen bg-slate-950 text-slate-300 font-sans relative overflow-x-hidden flex flex-col justify-between">
+    
+    <!-- Background Ambient Glows -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-3/4 h-[30rem] bg-gradient-to-tr from-red-600/10 via-orange-500/10 to-amber-400/10 blur-3xl pointer-events-none rounded-full" />
+
+    <!-- Included Header Component -->
+    <header-component />
+
+    <div class="container mx-auto flex flex-col flex-1 px-4 sm:px-6 lg:px-8 py-6 relative z-10">
+      
+      <!-- TOP CONTROL / TITLE & PROFILE BAR -->
+      <div class="relative z-20 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900/80 border border-orange-900/30 shadow-xl backdrop-blur-md rounded-2xl p-4 sm:px-6">
+        
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-red-600 via-orange-500 to-amber-500 flex items-center justify-center text-white font-extrabold text-sm shadow-md shadow-orange-950/50">
+            ⚙️
           </div>
-          <div class="ml-4 flex items-center md:ml-6">
-            <!-- Profile dropdown -->
-            <Menu as="div" class="ml-3 relative">
-              <div>
-                <MenuButton
-                  class="max-w-xs bg-white rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 lg:p-2 lg:rounded-md lg:hover:bg-gray-50"
-                >
-                  <span
-                    class="hidden ml-3 text-gray-700 text-sm font-medium lg:block"
-                  >
-                    {{
-                      authData
-                        ? authData.firstName + " " + authData.lastName
-                        : ""
-                    }}
-                  </span>
-                  <ChevronDownIcon
-                    class="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:block"
-                    aria-hidden="true"
-                  />
-                  <MenuIcon
-                    class="flex-shrink-0 ml-1 h-5 w-5 text-gray-400 lg:hidden"
-                    aria-hidden="true"
-                  />
-                </MenuButton>
-              </div>
-              <transition
-                enter-active-class="transition ease-out duration-100"
-                enter-from-class="transform opacity-0 scale-95"
-                enter-to-class="transform opacity-100 scale-100"
-                leave-active-class="transition ease-in duration-75"
-                leave-from-class="transform opacity-100 scale-100"
-                leave-to-class="transform opacity-0 scale-95"
-              >
-                <MenuItems
-                  class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                >
-                  <MenuItem v-slot="{ active }">
-                    <router-link
-                      to="/profile"
-                      :class="[
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700',
-                      ]"
-                      >Your Profile
-                    </router-link>
-                  </MenuItem>
-                  <MenuItem v-slot="{ active }">
-                    <router-link
-                      to="/"
-                      :class="[
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700',
-                      ]"
-                      >Home</router-link
-                    >
-                  </MenuItem>
-                  <MenuItem @click.prevent="confirmLogout" v-slot="{ active }">
-                    <a
-                      href="#"
-                      :class="[
-                        active ? 'bg-gray-100' : '',
-                        'block px-4 py-2 text-sm text-gray-700',
-                      ]"
-                      >Logout</a
-                    >
-                  </MenuItem>
-                </MenuItems>
-              </transition>
-            </Menu>
-          </div>
+          <h1 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+            Settings for your profile
+          </h1>
         </div>
-      </div>
-      <main class="relative mt-4">
-        <div class="max-w-screen-xl mx-auto pb-6 px-4 sm:px-6 lg:pb-16 lg:px-8">
-          <div class="bg-accent rounded-lg shadow overflow-hidden">
-            <div
-              class="divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x"
-            >
-              <form
-                class="divide-y divide-gray-200 lg:col-span-9"
-                action="#"
-                method="POST"
+
+        <!-- Profile Dropdown -->
+        <div class="flex items-center justify-end w-full sm:w-auto">
+          <Menu as="div" class="relative inline-block text-left">
+            <div>
+              <MenuButton
+                class="inline-flex items-center space-x-2 px-3 py-2 bg-slate-950/80 border border-slate-800 hover:border-orange-500/50 rounded-xl text-xs font-semibold text-slate-200 hover:text-white transition-all focus:outline-none cursor-pointer"
               >
-                <!-- Profile section -->
-                <div class="py-6 px-4 sm:p-6 lg:pb-8">
+                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center font-bold text-[10px]">
+                  {{ authData?.firstName ? authData.firstName.charAt(0) : 'U' }}
+                </div>
+                <span class="hidden sm:inline-block max-w-[140px] truncate">
+                  {{ authData ? authData.firstName + ' ' + authData.lastName : 'User' }}
+                </span>
+                <ChevronDownIcon class="h-4 w-4 text-slate-400" aria-hidden="true" />
+              </MenuButton>
+            </div>
+
+            <transition 
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95" 
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75" 
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
+            >
+              <MenuItems class="origin-top-right absolute right-0 mt-2 w-48 rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl p-1.5 focus:outline-none z-50">
+                <MenuItem v-slot="{ active }">
+                  <router-link 
+                    to="/profile" 
+                    :class="[active ? 'bg-slate-800 text-amber-300' : 'text-slate-300', 'block px-3 py-2 rounded-xl text-xs font-medium transition-colors']"
+                  >
+                    Your Profile
+                  </router-link>
+                </MenuItem>
+                <MenuItem v-slot="{ active }">
+                  <router-link 
+                    to="/"
+                    :class="[active ? 'bg-slate-800 text-amber-300' : 'text-slate-300', 'block px-3 py-2 rounded-xl text-xs font-medium transition-colors']"
+                  >
+                    Home
+                  </router-link>
+                </MenuItem>
+                <MenuItem @click.prevent="confirmLogout" v-slot="{ active }">
+                  <button 
+                    type="button" 
+                    :class="[active ? 'bg-red-950/40 text-red-300' : 'text-red-400', 'w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer']"
+                  >
+                    Logout
+                  </button>
+                </MenuItem>
+              </MenuItems>
+            </transition>
+          </Menu>
+        </div>
+
+      </div>
+
+      <!-- MAIN PROFILE SETTINGS SECTION -->
+      <main class="mt-6 flex-1">
+        <div class="bg-slate-900/80 border border-orange-900/40 shadow-2xl backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-orange-950/40">
+          
+          <form @submit.prevent class="space-y-8">
+            
+            <!-- Section Title -->
+            <div class="border-b border-slate-800 pb-4">
+              <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                Personal Information
+              </h2>
+              <p class="mt-1 text-xs text-amber-200/70">
+                Manage your account credentials and personal information.
+              </p>
+            </div>
+
+            <div class="flex flex-col-reverse lg:flex-row gap-8 items-start">
+              
+              <!-- Left Column: Form Fields -->
+              <div class="flex-grow space-y-5 w-full">
+                
+                <!-- Email Field -->
+                <div>
+                  <label for="email" class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    :value="authData?.email || ''"
+                    disabled
+                    placeholder="name@example.com"
+                    class="w-full px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-slate-400 text-sm focus:outline-none cursor-not-allowed opacity-80"
+                  />
+                  <p class="mt-1 text-[11px] text-slate-500">Email address cannot be changed directly.</p>
+                </div>
+
+                <!-- First and Last Name Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <h2 class="text-lg leading-6 font-medium text-gray-900">
-                      Profile
-                    </h2>
-                    <p class="mt-1 text-sm text-gray-500">
-                      This information will be displayed publicly so be careful
-                      what you share.
-                    </p>
+                    <label for="first-name" class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="first-name"
+                      id="first-name"
+                      :placeholder="authData?.firstName || 'First Name'"
+                      class="w-full px-4 py-3 bg-slate-950/80 border border-slate-800 focus:border-orange-500 focus:ring-1 focus:ring-amber-400/40 rounded-xl text-slate-100 text-sm focus:outline-none transition-all placeholder-slate-500"
+                    />
                   </div>
 
-                  <div class="mt-6 flex flex-col lg:flex-row">
-                    <div class="flex-grow space-y-6">
-                      <div class="col-span-12 sm:col-span-6">
-                        <label
-                          for="first-name"
-                          class="block text-sm font-medium text-gray-700"
-                        >
-                          Email</label
-                        >
-                        <input
-                          type="text"
-                          name="first-name"
-                          id="first-name"
-                          autocomplete="given-name"
-                          :placeholder="authData.email"
-                          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm"
-                        />
-                      </div>
-                      <div class="grid grid-cols-2 gap-4">
-                        <div>
-                          <label
-                            for="first-name"
-                            class="block text-sm font-medium text-gray-700"
-                            >First name</label
-                          >
-                          <input
-                            type="text"
-                            name="first-name"
-                            id="first-name"
-                            autocomplete="given-name"
-                            :placeholder="authData.firstName"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm"
-                          />
-                        </div>
-                        <div>
-                          <label
-                            for="last-name"
-                            class="block text-sm font-medium text-gray-700"
-                            >Last name</label
-                          >
-                          <input
-                            type="text"
-                            name="last-name"
-                            id="last-name"
-                            autocomplete="family-name"
-                            :placeholder="authData.lastName"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="mt-6 flex-grow lg:mt-0 lg:ml-6 lg:flex-grow-0 lg:flex-shrink-0"
-                    >
-                      <p
-                        class="text-sm font-medium text-gray-700"
-                        aria-hidden="true"
-                      >
-                        Photo
-                      </p>
-                      <div class="mt-1 lg:hidden">
-                        <div class="flex items-center">
-                          <div
-                            class="flex-shrink-0 inline-block rounded-full overflow-hidden h-12 w-12"
-                            aria-hidden="true"
-                          >
-                            <img class="rounded-full h-full w-full" alt="" />
-                          </div>
-                          <div class="ml-5 rounded-md shadow-sm">
-                            <div
-                              class="group relative border border-gray-300 rounded-md py-2 px-3 flex items-center justify-center hover:bg-gray-50 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-sky-500"
-                            >
-                              <label
-                                for="mobile-user-photo"
-                                class="relative text-sm leading-4 font-medium text-gray-700 pointer-events-none"
-                              >
-                                <span>Change</span>
-                                <span class="sr-only"> user photo</span>
-                              </label>
-                              <input
-                                id="mobile-user-photo"
-                                name="user-photo"
-                                type="file"
-                                class="absolute w-full h-full opacity-0 cursor-pointer border-gray-300 rounded-md"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div
-                        class="hidden relative rounded-full overflow-hidden lg:block"
-                      >
-                        <img class="relative rounded-full w-40 h-40" alt="" />
-                        <label
-                          for="desktop-user-photo"
-                          class="absolute inset-0 w-full h-full bg-black bg-opacity-75 flex items-center justify-center text-sm font-medium text-white opacity-0 hover:opacity-100 focus-within:opacity-100"
-                        >
-                          <span>Change</span>
-                          <span class="sr-only"> user photo</span>
-                          <input
-                            type="file"
-                            id="desktop-user-photo"
-                            name="user-photo"
-                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer border-gray-300 rounded-md"
-                          />
-                        </label>
-                      </div>
-                    </div>
+                  <div>
+                    <label for="last-name" class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="last-name"
+                      id="last-name"
+                      :placeholder="authData?.lastName || 'Last Name'"
+                      class="w-full px-4 py-3 bg-slate-950/80 border border-slate-800 focus:border-orange-500 focus:ring-1 focus:ring-amber-400/40 rounded-xl text-slate-100 text-sm focus:outline-none transition-all placeholder-slate-500"
+                    />
                   </div>
                 </div>
-              </form>
+
+                <!-- Action Submit Button -->
+                <div class="pt-4 flex justify-end">
+                  <button 
+                    type="submit"
+                    class="py-3 px-6 rounded-xl bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:via-orange-400 hover:to-amber-400 active:scale-[0.99] text-white font-bold text-xs shadow-lg shadow-orange-950/60 transition-all cursor-pointer"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+
+              </div>
+
+              <!-- Right Column: Avatar/Photo Upload -->
+              <div class="flex flex-col items-center justify-center space-y-3 w-full lg:w-auto lg:px-6">
+                <span class="block text-xs font-bold uppercase tracking-wider text-amber-400">
+                  Profile Photo
+                </span>
+
+                <div class="relative group w-32 h-32 rounded-3xl overflow-hidden bg-slate-950 border-2 border-slate-800 hover:border-orange-500 transition-all shadow-xl flex items-center justify-center">
+                  <!-- Fallback Avatar Initials -->
+                  <span class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-300">
+                    {{ authData?.firstName ? authData.firstName.charAt(0) : 'U' }}
+                  </span>
+
+                  <!-- Hover Overlay for Photo Change -->
+                  <label
+                    for="desktop-user-photo"
+                    class="absolute inset-0 w-full h-full bg-slate-950/80 backdrop-blur-xs flex flex-col items-center justify-center text-xs font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  >
+                    <span>Change</span>
+                    <input
+                      type="file"
+                      id="desktop-user-photo"
+                      name="user-photo"
+                      class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </label>
+                </div>
+              </div>
+
             </div>
-          </div>
+
+          </form>
+
         </div>
       </main>
+
     </div>
+
+    <!-- Included Footer Component -->
+    <FooterComponent class="relative z-10" />
   </div>
-  <FooterComponent />
 </template>
 
 <script>
 import { computed, ref } from "vue";
 import { useAuth } from "../store/auth";
+import HeaderComponent from "../components/HeaderComponent.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { ChevronDownIcon, MenuIcon } from "@heroicons/vue/solid";
 
 export default {
   components: {
+    HeaderComponent,
+    FooterComponent,
     Menu,
     MenuButton,
     MenuItem,
     MenuItems,
     ChevronDownIcon,
     MenuIcon,
-    FooterComponent,
   },
   setup() {
     const auth = useAuth();

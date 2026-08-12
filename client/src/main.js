@@ -7,28 +7,30 @@ import App from './App.vue'
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import HeaderComponent from './components/HeaderComponent.vue'
+
 // Swiper imports
-import SwiperClass from 'swiper'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css'
 import 'swiper/css/pagination'
+
 // AOS imports
 import 'aos/dist/aos.css'
 
 const app = createApp(App)
+
 app.use(router)
 app.use(createPinia())
 app.use(VueSmoothScroll)
 app.use(VueAwesomeSwiper)
 app.component('header-component', HeaderComponent)
-app.mount('#app');
 
-const options = {
+// Custom Toast Options for Red, Orange & Yellow Glassmorphic Theme
+const toastOptions = {
     transition: "Vue-Toastification__bounce",
-    maxToasts: 20,
+    maxToasts: 5,
     newestOnTop: true,
     position: "top-right",
-    timeout: 5000,
+    timeout: 4000,
     closeOnClick: true,
     pauseOnFocusLoss: true,
     pauseOnHover: true,
@@ -37,6 +39,10 @@ const options = {
     closeButton: "button",
     icon: true,
     rtl: false,
+    // Custom Tailwind class overrides
+    toastClassName: "futura-custom-toast",
+    bodyClassName: "futura-custom-toast-body",
 };
 
-app.use(Toast, options);
+app.use(Toast, toastOptions);
+app.mount('#app');

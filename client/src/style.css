@@ -3,6 +3,60 @@
 
 @import "tailwindcss";
 
+/* Main Toast Container Override */
+.Vue-Toastification__toast.futura-custom-toast {
+  background-color: rgba(15, 23, 42, 0.92) !important; /* slate-900 */
+  border: 1px solid rgba(124, 45, 18, 0.5) !important;  /* border-orange-900/50 */
+  border-radius: 1rem !important;                       /* rounded-2xl */
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 20px 25px -5px rgba(67, 20, 7, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+  color: #f8fafc !important;                            /* text-slate-50 */
+  font-family: inherit !important;
+  padding: 12px 16px !important;
+}
+
+/* Toast Text Body */
+.futura-custom-toast-body {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  color: #f1f5f9 !important;
+}
+
+/* Toast Type Variations */
+
+/* Success Toast: Orange/Emerald Accent */
+.Vue-Toastification__toast--success.futura-custom-toast {
+  border-color: rgba(245, 158, 11, 0.4) !important; /* amber-500/40 */
+}
+.Vue-Toastification__toast--success .Vue-Toastification__progress-bar {
+  background: linear-gradient(to right, #dc2626, #f97316, #f59e0b) !important; /* Red -> Orange -> Amber */
+}
+
+/* Error Toast: Red Accent */
+.Vue-Toastification__toast--error.futura-custom-toast {
+  border-color: rgba(239, 68, 68, 0.5) !important; /* red-500/50 */
+}
+.Vue-Toastification__toast--error .Vue-Toastification__progress-bar {
+  background-color: #ef4444 !important;
+}
+
+/* Info Toast: Orange Accent */
+.Vue-Toastification__toast--info.futura-custom-toast {
+  border-color: rgba(249, 115, 22, 0.5) !important; /* orange-500/50 */
+}
+.Vue-Toastification__toast--info .Vue-Toastification__progress-bar {
+  background: linear-gradient(to right, #f97316, #f59e0b) !important;
+}
+
+/* Close Button Styling */
+.Vue-Toastification__close-button {
+  color: #94a3b8 !important; /* slate-400 */
+  opacity: 0.8 !important;
+}
+.Vue-Toastification__close-button:hover {
+  color: #fbbf24 !important; /* amber-400 */
+  opacity: 1 !important;
+}
 
 body {
   font-family: 'Nunito', sans-serif;
