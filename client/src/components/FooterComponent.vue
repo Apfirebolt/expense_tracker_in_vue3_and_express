@@ -1,43 +1,50 @@
 <template>
-  <footer class="bg-base text-accent py-4">
-    <div class="container mx-auto px-4">
-      <div class="flex">
-        <div class="w-4/12">
-          <p class="text-center text-gray-400 text-lg">
-            &copy; {{ currentYear }} Expense Management Application
+  <footer class="relative z-10 bg-slate-700/90 border-t border-orange-950/40 backdrop-blur-md text-slate-300 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center md:text-left">
+        
+        <!-- Brand & Copyright -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-center md:justify-start space-x-2">
+            <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-red-600 via-orange-500 to-amber-500 flex items-center justify-center text-white font-extrabold text-xs shadow-md shadow-orange-950/50">
+              F
+            </div>
+            <span class="text-lg font-extrabold tracking-tight text-white">
+              Futura
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">
+            &copy; {{ currentYear }} Futura Expense Tracker. All rights reserved.
           </p>
         </div>
-        <div class="w-8/12 flex">
-          <div class="w-6/12">
-            <p class="text-center text-gray-400 text-sm">
-              Track your expenses by managing amount credited or debited.
-            </p>
-          </div>
-          <div class="w-6/12">
-            <p class="text-center text-gray-400 text-sm">
-              Update your profile settings, set expense limit of a Month
-            </p>
-          </div>
+
+        <!-- Feature Highlight 1 -->
+        <div class="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-xs space-y-1">
+          <p class="text-amber-400 font-semibold flex items-center justify-center md:justify-start space-x-1">
+            <span>💳 Smart Tracking</span>
+          </p>
+          <p class="text-slate-400 leading-relaxed">
+            Track your expenses seamlessly by managing credits, debits, and custom categories in real-time.
+          </p>
         </div>
+
+        <!-- Feature Highlight 2 -->
+        <div class="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80 text-xs space-y-1">
+          <p class="text-amber-400 font-semibold flex items-center justify-center md:justify-start space-x-1">
+            <span>⚙️ Profile & Budgets</span>
+          </p>
+          <p class="text-slate-400 leading-relaxed">
+            Update your profile preferences and manage monthly limits to keep your finances in check.
+          </p>
+        </div>
+
       </div>
     </div>
   </footer>
 </template>
 
-<script>
-import { defineComponent, computed } from 'vue'
+<script setup>
+import { computed } from 'vue';
 
-export default defineComponent({
-  setup() {
-    const currentYear = computed(() => new Date().getFullYear())
-
-    return {
-      currentYear,
-    }
-  },
-})
+const currentYear = computed(() => new Date().getFullYear());
 </script>
-
-<style>
-/* Add any custom styles here */
-</style>
