@@ -8,15 +8,12 @@ import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 import HeaderComponent from './components/HeaderComponent.vue'
 // Swiper imports
-import SwiperClass, { Pagination } from 'swiper'
+import SwiperClass from 'swiper'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css'
 import 'swiper/css/pagination'
 // AOS imports
 import 'aos/dist/aos.css'
-
-// Use swiper modules
-SwiperClass.use([Pagination])
 
 const app = createApp(App)
 app.use(router)

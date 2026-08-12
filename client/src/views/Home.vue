@@ -79,13 +79,5 @@
 </template>
 
 <script>
-import { Pagination } from 'swiper'
 
-export default {
-    setup() {
-        return {
-            modules: [Pagination],
-        }
-    }
-};
 </script>
