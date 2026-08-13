@@ -21,3 +21,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .vscode/settings.json
+
+# Ignore nested pycache directories
+**/__pycache__/
