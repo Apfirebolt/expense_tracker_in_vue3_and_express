@@ -34,6 +34,7 @@
     "express": "*",
     "express-async-handler": "*",
     "jsonwebtoken": "*",
+    "kafkajs": "^2.2.4",
     "mongoose": "*",
     "morgan": "*",
     "multer": "*",

@@ -7,6 +7,7 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './server/config/swagger.js'
 import { notFound, errorHandler } from "./server/middleware/errorMiddleware.js";
 import connectDB from "./server/config/db.js";
+import { connectProducer } from "./server/utils/kafkaConnect.js";
 
 import authRoutes from "./server/routes/auth.js";
 import expenseRoutes from "./server/routes/expense.js";
@@ -15,6 +16,7 @@ import exp from "constants";
 dotenv.config();
 
 connectDB();
+connectProducer();
 
 const app = express();
 

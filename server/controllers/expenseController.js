@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Expense from "../models/expense.js";
+import { sendJson } from "../utils/kafkaConnect.js";
 
 // @desc    List of user expense
 // @route   GET /api/expense
@@ -50,6 +51,16 @@ const createExpense = asyncHandler(async (req, res) => {
 
   if (expense) {
     res.status(201).json(expense);
+
+    // Send the expense data to Kafka
+    const kafkaData = {
+      user_id: req.user._id,
+      amount: expense.amount,
+      type: 'Expense',
+      description: expense.description,
+      createdAt: expense.createdAt,
+    }
+    await sendJson('expense-topic', expense._id.toString(), kafkaData);
   } else {
     res.status(400);
     throw new Error("Invalid Expense data");
