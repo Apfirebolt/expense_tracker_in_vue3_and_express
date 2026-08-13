@@ -6,7 +6,7 @@ import { sendJson } from "../utils/kafkaConnect.js";
 // @route   GET /api/expense
 // @access  Private
 const getUserExpenses = asyncHandler(async (req, res) => {
-  const itemsPerPage = 5;
+  const itemsPerPage = 50;
   const startPage = req.query.page || 1;
   await Expense.aggregate([
     { $match: { user: req.user._id } },

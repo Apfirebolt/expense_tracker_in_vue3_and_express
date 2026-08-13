@@ -147,10 +147,18 @@
             <div class="flex items-center space-x-3">
               <button 
                 type="button" 
-                @click="switchViewMode()"
+                @click="switchViewMode('calendar')"
                 class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-400/50 transition-all cursor-pointer"
               >
-                {{ viewMode === 'calendar' ? 'View List' : 'View Calendar' }}
+                View Calendar
+              </button>
+
+              <button 
+                type="button" 
+                @click="switchViewMode('chart')"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-400/50 transition-all cursor-pointer"
+              >
+                View Analytics
               </button>
               
               <button 
@@ -168,6 +176,7 @@
 
         <!-- CALENDAR / LIST VIEWS -->
         <ExpenseCalendar v-if="viewMode === 'calendar'" :expenses="allExpenses.data" />
+        <ExpenseChart v-else-if="viewMode === 'chart'" :expenses="allExpenses.data" />
 
         <div v-else class="space-y-4" data-aos="fade-up-right">
           
@@ -183,7 +192,7 @@
           <!-- Mobile Activity list (smallest breakpoint) -->
           <div class="sm:hidden bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
             <ul role="list" class="divide-y divide-slate-800">
-              <li v-for="expense in allExpenses.data" :key="expense._id" class="p-4 hover:bg-slate-800/40 transition-colors">
+              <li v-for="expense in filteredExpenses" :key="expense._id" class="p-4 hover:bg-slate-800/40 transition-colors">
                 <div class="flex items-center justify-between space-x-4">
                   <div class="flex items-center space-x-3 min-w-0">
                     <div class="p-2 rounded-xl bg-slate-950 border border-slate-800">
@@ -239,7 +248,7 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-800/60 text-xs">
-                  <tr v-for="expense in allExpenses.data" :key="expense._id" class="hover:bg-slate-800/40 transition-colors group">
+                  <tr v-for="expense in filteredExpenses" :key="expense._id" class="hover:bg-slate-800/40 transition-colors group">
                     <td class="px-6 py-4 font-semibold text-slate-100">
                       <div class="flex items-center space-x-3">
                         <div class="p-1.5 rounded-lg bg-slate-950 border border-slate-800">
@@ -281,8 +290,8 @@
             <div class="bg-slate-950/80 px-6 py-4 border-t border-slate-800 flex items-center justify-between">
               <p class="text-xs text-slate-400">
                 Showing <span class="font-bold text-white">{{ showCurrentIndex }}</span> to 
-                <span class="font-bold text-white">{{ currentPage * numberOfItemsPerPage < allExpenses.total ? currentPage * numberOfItemsPerPage : allExpenses.total }}</span> of 
-                <span class="font-bold text-white">{{ allExpenses.total }}</span> results
+                <span class="font-bold text-white">{{ currentPage * numberOfItemsPerPage < filteredExpenses.length ? currentPage * numberOfItemsPerPage : filteredExpenses.length }}</span> of 
+                <span class="font-bold text-white">{{ filteredExpenses.length }}</span> results
               </p>
 
               <div class="flex items-center space-x-2">
@@ -314,7 +323,7 @@
 </template>
 
 <script>
-import { onMounted, computed, ref } from 'vue'
+import { onMounted, computed, ref, watch } from 'vue'
 import { useAuth } from '../store/auth'
 import { useExpense } from '../store/expense';
 import dayjs from 'dayjs';
@@ -322,6 +331,7 @@ import ExpenseForm from '../components/ExpenseForm.vue'
 import FooterComponent from '../components/FooterComponent.vue';
 import Confirm from '../components/Confirm.vue';
 import ExpenseCalendar from '../components/ExpenseCalendar.vue';
+import ExpenseChart from '../components/ExpenseChart.vue';
 import AOS from "aos";
 import {
   Dialog,
@@ -357,6 +367,7 @@ export default {
   components: {
     ExpenseForm,
     ExpenseCalendar,
+    ExpenseChart,
     Confirm,
     Dialog,
     DialogOverlay,
@@ -406,12 +417,31 @@ export default {
       isDeleteModalOpened.value = false
     }
 
-    const allExpenses = computed(() => expense.getExpenses)
+    const allExpenses = computed(() => expense.getExpenses || {})
     const authData = computed(() => auth.getAuthData)
+
+    // Filter expenses safely with fallback empty array
+    const filteredExpenses = computed(() => {
+      const expensesList = allExpenses.value?.data || []
+      
+      if (!searchText.value.trim()) {
+        return expensesList
+      }
+      
+      const query = searchText.value.toLowerCase().trim()
+      return expensesList.filter(item =>
+        item.description && item.description.toLowerCase().includes(query)
+      )
+    })
+
+    // Reset pagination to page 1 when user types in search bar
+    watch(searchText, () => {
+      currentPage.value = 1
+    })
 
     onMounted(async () => {
       AOS.init();
-      await expense.getExpensesAction()
+      await expense.getExpensesAction(currentPage.value)
     })
 
     const addExpenseActionUtil = async (payload) => {
@@ -423,7 +453,7 @@ export default {
       }
       await expense.addExpense(payload)
       closeModal()
-      expense.getExpensesAction()
+      expense.getExpensesAction(currentPage.value)
     }
 
     const confirmLogout = async () => {
@@ -441,13 +471,17 @@ export default {
     }
 
     const confirmDelete = async () => {
-      await expense.deleteExpense(selectedItem.value._id)
-      isDeleteModalOpened.value = false
-      expense.getExpensesAction()
+      if (selectedItem.value?._id) {
+        await expense.deleteExpense(selectedItem.value._id)
+        isDeleteModalOpened.value = false
+        expense.getExpensesAction(currentPage.value)
+      }
     }
 
+    // FIXED: Corrected lastPage reference from API response metadata
     const goToNextPage = async () => {
-      if (currentPage.value < allExpenses.value.lastPage) {
+      const maxPages = allExpenses.value?.lastPage || 1
+      if (currentPage.value < maxPages) {
         currentPage.value += 1
         await expense.getExpensesAction(currentPage.value)
       }
@@ -461,23 +495,17 @@ export default {
     }
 
     const showCurrentIndex = computed(() => {
-      if (currentPage.value === 1) {
-        return 1;
-      } else {
-        return currentPage.value * numberOfItemsPerPage - numberOfItemsPerPage + 1
-      }
+      if (filteredExpenses.value.length === 0) return 0
+      return (currentPage.value - 1) * numberOfItemsPerPage + 1
     })
 
-    const switchViewMode = () => {
-      if (viewMode.value === 'normal') {
-        viewMode.value = 'calendar'
-      } else {
-        viewMode.value = 'normal'
-      }
+    const switchViewMode = (mode) => {
+      viewMode.value = mode;
     }
 
     return {
       allExpenses,
+      filteredExpenses,
       authData,
       isOpen,
       closeModal,
