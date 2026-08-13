@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import VueSmoothScroll from 'vue3-smooth-scroll'
 import './style.css'
 import router from './routes'
@@ -12,11 +13,15 @@ import HeaderComponent from './components/HeaderComponent.vue'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/css'
 import 'swiper/css/pagination'
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 // AOS imports
 import 'aos/dist/aos.css'
 
 const app = createApp(App)
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 app.use(router)
 app.use(createPinia())

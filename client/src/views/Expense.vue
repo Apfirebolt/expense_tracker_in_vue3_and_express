@@ -155,6 +155,14 @@
 
               <button 
                 type="button" 
+                @click="switchViewMode('list')"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-400/50 transition-all cursor-pointer"
+              >
+                View List
+              </button>
+
+              <button 
+                type="button" 
                 @click="switchViewMode('chart')"
                 class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-400/50 transition-all cursor-pointer"
               >
@@ -174,7 +182,7 @@
           </div>
         </div>
 
-        <!-- CALENDAR / LIST VIEWS -->
+        <!-- CALENDAR / ANALYTICS / LIST VIEWS -->
         <ExpenseCalendar v-if="viewMode === 'calendar'" :expenses="allExpenses.data" />
         <ExpenseChart v-else-if="viewMode === 'chart'" :expenses="allExpenses.data" />
 
@@ -192,7 +200,7 @@
           <!-- Mobile Activity list (smallest breakpoint) -->
           <div class="sm:hidden bg-slate-900/80 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
             <ul role="list" class="divide-y divide-slate-800">
-              <li v-for="expense in filteredExpenses" :key="expense._id" class="p-4 hover:bg-slate-800/40 transition-colors">
+              <li v-for="expense in processedExpenses" :key="expense._id" class="p-4 hover:bg-slate-800/40 transition-colors">
                 <div class="flex items-center justify-between space-x-4">
                   <div class="flex items-center space-x-3 min-w-0">
                     <div class="p-2 rounded-xl bg-slate-950 border border-slate-800">
@@ -234,21 +242,47 @@
             </div>
           </div>
 
-          <!-- Desktop Activity Table -->
+          <!-- Desktop Activity Table (Pure Vue + JavaScript Sorting) -->
           <div class="hidden sm:block bg-slate-900/80 border border-slate-800/80 shadow-2xl backdrop-blur-md rounded-3xl overflow-hidden">
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
                 <thead>
-                  <tr class="bg-slate-950/80 border-b border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    <th class="px-6 py-4">Description</th>
-                    <th class="px-6 py-4 text-right">Amount</th>
-                    <th class="px-6 py-4 text-center">Type</th>
-                    <th class="px-6 py-4 text-right">Date</th>
+                  <tr class="bg-slate-950/80 border-b border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400 select-none">
+                    
+                    <th @click="sort('description')" class="px-6 py-4 cursor-pointer hover:text-amber-400 transition-colors">
+                      <div class="flex items-center space-x-1">
+                        <span>Description</span>
+                        <span v-if="sortKey === 'description'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                      </div>
+                    </th>
+
+                    <th @click="sort('amount')" class="px-6 py-4 text-right cursor-pointer hover:text-amber-400 transition-colors">
+                      <div class="flex items-center justify-end space-x-1">
+                        <span>Amount</span>
+                        <span v-if="sortKey === 'amount'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                      </div>
+                    </th>
+
+                    <th @click="sort('type')" class="px-6 py-4 text-center cursor-pointer hover:text-amber-400 transition-colors">
+                      <div class="flex items-center justify-center space-x-1">
+                        <span>Type</span>
+                        <span v-if="sortKey === 'type'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                      </div>
+                    </th>
+
+                    <th @click="sort('createdAt')" class="px-6 py-4 text-right cursor-pointer hover:text-amber-400 transition-colors">
+                      <div class="flex items-center justify-end space-x-1">
+                        <span>Date</span>
+                        <span v-if="sortKey === 'createdAt'">{{ sortOrder === 'asc' ? '▲' : '▼' }}</span>
+                      </div>
+                    </th>
+
                     <th class="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
+
                 <tbody class="divide-y divide-slate-800/60 text-xs">
-                  <tr v-for="expense in filteredExpenses" :key="expense._id" class="hover:bg-slate-800/40 transition-colors group">
+                  <tr v-for="expense in processedExpenses" :key="expense._id" class="hover:bg-slate-800/40 transition-colors group">
                     <td class="px-6 py-4 font-semibold text-slate-100">
                       <div class="flex items-center space-x-3">
                         <div class="p-1.5 rounded-lg bg-slate-950 border border-slate-800">
@@ -282,6 +316,12 @@
                       </button>
                     </td>
                   </tr>
+
+                  <tr v-if="!processedExpenses.length">
+                    <td colspan="5" class="px-6 py-8 text-center text-slate-500 italic">
+                      No expense records found.
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -290,8 +330,8 @@
             <div class="bg-slate-950/80 px-6 py-4 border-t border-slate-800 flex items-center justify-between">
               <p class="text-xs text-slate-400">
                 Showing <span class="font-bold text-white">{{ showCurrentIndex }}</span> to 
-                <span class="font-bold text-white">{{ currentPage * numberOfItemsPerPage < filteredExpenses.length ? currentPage * numberOfItemsPerPage : filteredExpenses.length }}</span> of 
-                <span class="font-bold text-white">{{ filteredExpenses.length }}</span> results
+                <span class="font-bold text-white">{{ showEndIndex }}</span> of 
+                <span class="font-bold text-white">{{ totalRecords }}</span> results
               </p>
 
               <div class="flex items-center space-x-2">
@@ -304,7 +344,8 @@
                 </button>
                 <button 
                   @click="goToNextPage"
-                  class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-all"
+                  :disabled="currentPage >= maxPages"
+                  class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
                   Next
                 </button>
@@ -333,34 +374,23 @@ import Confirm from '../components/Confirm.vue';
 import ExpenseCalendar from '../components/ExpenseCalendar.vue';
 import ExpenseChart from '../components/ExpenseChart.vue';
 import AOS from "aos";
+
 import {
   Dialog,
-  DialogOverlay,
   Menu,
   MenuButton,
   MenuItem,
   MenuItems,
   TransitionChild,
   TransitionRoot,
-  DialogTitle,
   DialogPanel
 } from '@headlessui/vue'
 import {
-  BellIcon,
-  MenuAlt1Icon,
-  XIcon,
-} from '@heroicons/vue/outline'
-import {
-  CashIcon,
-  CheckCircleIcon,
   ChevronDownIcon,
-  ChevronRightIcon,
-  OfficeBuildingIcon,
   SearchIcon,
   TrashIcon,
   PlusIcon,
   MinusIcon,
-  MenuIcon
 } from '@heroicons/vue/solid'
 
 export default {
@@ -370,27 +400,17 @@ export default {
     ExpenseChart,
     Confirm,
     Dialog,
-    DialogOverlay,
     Menu,
     MenuButton,
     MenuItem,
     MenuItems,
     TransitionChild,
     TransitionRoot,
-    BellIcon,
-    CashIcon,
-    MenuIcon,
-    PlusIcon,
-    MinusIcon,
-    CheckCircleIcon,
     ChevronDownIcon,
-    ChevronRightIcon,
-    MenuAlt1Icon,
-    OfficeBuildingIcon,
     SearchIcon,
     TrashIcon,
-    XIcon,
-    DialogTitle,
+    PlusIcon,
+    MinusIcon,
     DialogPanel,
     FooterComponent
   },
@@ -398,7 +418,7 @@ export default {
     const expense = useExpense()
     const auth = useAuth()
     const isOpen = ref(false)
-    const viewMode = ref('normal')
+    const viewMode = ref('list')
     const isDeleteModalOpened = ref(false)
     const confirmMessage = ref('')
     const errorMessage = ref('')
@@ -406,6 +426,10 @@ export default {
     const currentPage = ref(1)
     const searchText = ref('')
     const numberOfItemsPerPage = 5
+
+    // Native Sorting State
+    const sortKey = ref('createdAt')
+    const sortOrder = ref('desc') // 'asc' or 'desc'
 
     function closeModal() {
       isOpen.value = false
@@ -420,21 +444,60 @@ export default {
     const allExpenses = computed(() => expense.getExpenses || {})
     const authData = computed(() => auth.getAuthData)
 
-    // Filter expenses safely with fallback empty array
-    const filteredExpenses = computed(() => {
-      const expensesList = allExpenses.value?.data || []
-      
-      if (!searchText.value.trim()) {
-        return expensesList
+    // Pure JS Filtering & Sorting Computed Property
+    const processedExpenses = computed(() => {
+      let list = [...(allExpenses.value?.data || [])]
+
+      // 1. Filter by Search Query
+      if (searchText.value.trim()) {
+        const query = searchText.value.toLowerCase().trim()
+        list = list.filter(item => 
+          item.description && item.description.toLowerCase().includes(query)
+        )
       }
-      
-      const query = searchText.value.toLowerCase().trim()
-      return expensesList.filter(item =>
-        item.description && item.description.toLowerCase().includes(query)
-      )
+
+      // 2. Pure JS Sorting
+      if (sortKey.value) {
+        list.sort((a, b) => {
+          let valA = a[sortKey.value]
+          let valB = b[sortKey.value]
+
+          // Handle numerical sorting for amounts
+          if (sortKey.value === 'amount') {
+            valA = Number(valA) || 0
+            valB = Number(valB) || 0
+          } 
+          // Handle Date sorting
+          else if (sortKey.value === 'createdAt') {
+            valA = new Date(valA).getTime()
+            valB = new Date(valB).getTime()
+          } 
+          // Handle String comparison
+          else if (typeof valA === 'string') {
+            valA = valA.toLowerCase()
+            valB = (valB || '').toLowerCase()
+          }
+
+          if (valA < valB) return sortOrder.value === 'asc' ? -1 : 1
+          if (valA > valB) return sortOrder.value === 'asc' ? 1 : -1
+          return 0
+        })
+      }
+
+      return list
     })
 
-    // Reset pagination to page 1 when user types in search bar
+    // Sorting Click Handler
+    const sort = (key) => {
+      if (sortKey.value === key) {
+        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+      } else {
+        sortKey.value = key
+        sortOrder.value = 'asc'
+      }
+    }
+
+    // Reset pagination to page 1 on search change
     watch(searchText, () => {
       currentPage.value = 1
     })
@@ -478,10 +541,11 @@ export default {
       }
     }
 
-    // FIXED: Corrected lastPage reference from API response metadata
+    const maxPages = computed(() => allExpenses.value?.lastPage || 1)
+    const totalRecords = computed(() => allExpenses.value?.total || processedExpenses.value.length)
+
     const goToNextPage = async () => {
-      const maxPages = allExpenses.value?.lastPage || 1
-      if (currentPage.value < maxPages) {
+      if (currentPage.value < maxPages.value) {
         currentPage.value += 1
         await expense.getExpensesAction(currentPage.value)
       }
@@ -495,17 +559,22 @@ export default {
     }
 
     const showCurrentIndex = computed(() => {
-      if (filteredExpenses.value.length === 0) return 0
+      if (processedExpenses.value.length === 0) return 0
       return (currentPage.value - 1) * numberOfItemsPerPage + 1
     })
 
+    const showEndIndex = computed(() => {
+      const end = showCurrentIndex.value + processedExpenses.value.length - 1
+      return end > 0 ? end : 0
+    })
+
     const switchViewMode = (mode) => {
-      viewMode.value = mode;
+      viewMode.value = mode
     }
 
     return {
       allExpenses,
-      filteredExpenses,
+      processedExpenses,
       authData,
       isOpen,
       closeModal,
@@ -526,8 +595,15 @@ export default {
       numberOfItemsPerPage,
       currentPage,
       showCurrentIndex,
+      showEndIndex,
+      totalRecords,
+      maxPages,
       switchViewMode,
-      viewMode
+      viewMode,
+      // Sorting
+      sortKey,
+      sortOrder,
+      sort
     }
   },
 }
