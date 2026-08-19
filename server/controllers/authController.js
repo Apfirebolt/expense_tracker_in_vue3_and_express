@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler'
-import { v2 as cloudinary } from 'cloudinary'
 import generateToken from '../utils/generateToken.js'
 import User from '../models/user.js'
+import cloudinary from '../utils/cloudinary.js'
 
 // Helper: Stream buffer directly to Cloudinary
 const uploadToCloudinary = (buffer) => {
