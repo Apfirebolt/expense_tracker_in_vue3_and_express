@@ -30,7 +30,17 @@ const userSchema = mongoose.Schema(
       enum: ['member', 'staff'],
       required : false,
       default: 'member'
-    }
+    },
+    profilePic: {
+      url: {
+        type: String,
+        default: '',
+      },
+      public_id: {
+        type: String,
+        default: '',
+      },
+    },
   },
   {
     timestamps: true,

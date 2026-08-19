@@ -1,16 +1,29 @@
 import express from 'express'
-const router = express.Router()
+import multer from 'multer'
 import {
   authUser,
   registerUser,
   getUserProfile,
+  updateUserProfilePic,
 } from '../controllers/authController.js'
-import { protect, admin } from '../middleware/authMiddleware.js'
+import { protect } from '../middleware/authMiddleware.js'
+
+const router = express.Router()
+const upload = multer({ storage: multer.memoryStorage() })
 
 /**
  * @openapi
  * components:
  *   schemas:
+ *     ProfilePic:
+ *       type: object
+ *       properties:
+ *         url:
+ *           type: string
+ *           example: https://res.cloudinary.com/demo/image/upload/v1612345678/sample.jpg
+ *         public_id:
+ *           type: string
+ *           example: user_profiles/sample123
  *     UserRegisterInput:
  *       type: object
  *       required:
@@ -87,9 +100,6 @@ import { protect, admin } from '../middleware/authMiddleware.js'
  *         _id:
  *           type: string
  *           example: 60d5ecb8b5c9c62b3c7c1a10
- *         username:
- *           type: string
- *           example: john_doe
  *         firstName:
  *           type: string
  *           example: John
@@ -106,6 +116,16 @@ import { protect, admin } from '../middleware/authMiddleware.js'
  *         userType:
  *           type: string
  *           example: member
+ *         profilePic:
+ *           $ref: '#/components/schemas/ProfilePic'
+ *     ProfilePicUploadResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: Profile picture updated successfully
+ *         profilePic:
+ *           $ref: '#/components/schemas/ProfilePic'
  */
 
 /**
@@ -132,8 +152,7 @@ import { protect, admin } from '../middleware/authMiddleware.js'
  *       500:
  *         description: Server error
  */
-router.route('/register')
-  .post(registerUser)
+router.route('/register').post(registerUser)
 
 /**
  * @openapi
@@ -183,8 +202,44 @@ router.post('/login', authUser)
  *       500:
  *         description: Server error
  */
-router
-  .route('/profile')
-  .get(protect, getUserProfile)
+router.route('/profile').get(protect, getUserProfile)
+
+/**
+ * @openapi
+ * /api/auth/profile/pic:
+ *   put:
+ *     summary: Upload or update user profile picture
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - image
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Profile picture updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ProfilePicUploadResponse'
+ *       400:
+ *         description: Please upload an image file
+ *       401:
+ *         description: Unauthorized - Token missing or invalid
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.route('/profile/pic').put(protect, upload.single('image'), updateUserProfilePic)
 
 export default router
