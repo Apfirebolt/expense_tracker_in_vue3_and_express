@@ -136,9 +136,36 @@ const updateUserProfilePic = asyncHandler(async (req, res) => {
   })
 })
 
+// @desc    Update user password
+// @route   PUT /api/auth/change-password
+// @access  Private
+const changeUserPassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body
+
+  const user = await User.findById(req.user._id)
+
+  if (!user) {
+    res.status(404)
+    throw new Error('User not found')
+  }
+
+  const isMatch = await user.matchPassword(currentPassword)
+
+  if (!isMatch) {
+    res.status(400)
+    throw new Error('Current password is incorrect')
+  }
+
+  user.password = newPassword
+  await user.save()
+
+  res.status(200).json({ message: 'Password updated successfully' })
+})
+
 export {
   authUser,
   registerUser,
   getUserProfile,
   updateUserProfilePic,
+  changeUserPassword,
 }

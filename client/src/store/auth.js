@@ -64,6 +64,67 @@ export const useAuth = defineStore("auth", {
       }
     },
 
+    async updateProfileData(profileData) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${this.authData.token}`,
+        };
+        const response = await httpClient.put(
+          "auth/profile",
+          profileData,
+          { headers }
+        );
+        if (response.data) {
+          this.authData = response.data;
+          toast.success("Profile updated successfully!");
+          localStorage.setItem("user", JSON.stringify(response.data));
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    async updateProfilePicture(profilePicData) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${this.authData.token}`,
+        };
+        const response = await httpClient.put(
+          "auth/profile/picture",
+          profilePicData,
+          { headers }
+        );
+        if (response.data) {
+          this.authData = response.data;
+          toast.success("Profile picture updated successfully!");
+          localStorage.setItem("user", JSON.stringify(response.data));
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    async changePassword(passwordData) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${this.authData.token}`,
+        };
+        const response = await httpClient.put(
+          "auth/profile/password",
+          passwordData,
+          { headers }
+        );
+        if (response.data) {
+          toast.success("Password changed successfully!");
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
     logout() {
       this.authData = null;
       localStorage.removeItem("user");
