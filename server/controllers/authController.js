@@ -162,10 +162,41 @@ const changeUserPassword = asyncHandler(async (req, res) => {
   res.status(200).json({ message: 'Password updated successfully' })
 })
 
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+
+  if (!user) {
+    res.status(404)
+    throw new Error('User not found')
+  }
+
+  const { firstName, lastName, email } = req.body
+
+  if (firstName) user.firstName = firstName
+  if (lastName) user.lastName = lastName
+  if (email) user.email = email
+
+  const updatedUser = await user.save()
+
+  res.status(200).json({
+    _id: updatedUser._id,
+    firstName: updatedUser.firstName,
+    lastName: updatedUser.lastName,
+    email: updatedUser.email,
+    isAdmin: updatedUser.isAdmin,
+    userType: updatedUser.userType,
+    profilePic: updatedUser.profilePic,
+  })
+})
+
 export {
   authUser,
   registerUser,
   getUserProfile,
   updateUserProfilePic,
   changeUserPassword,
+  updateUserProfile,
 }

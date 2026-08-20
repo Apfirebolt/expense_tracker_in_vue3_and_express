@@ -4,6 +4,8 @@ import {
   authUser,
   registerUser,
   getUserProfile,
+  updateUserProfile,
+  changeUserPassword,
   updateUserProfilePic,
 } from '../controllers/authController.js'
 import { protect } from '../middleware/authMiddleware.js'
@@ -69,6 +71,33 @@ const upload = multer({ storage: multer.memoryStorage() })
  *           type: string
  *           format: password
  *           example: Password123!
+ *     UserProfileUpdateInput:
+ *       type: object
+ *       properties:
+ *         firstName:
+ *           type: string
+ *           example: John
+ *         lastName:
+ *           type: string
+ *           example: Doe
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: john.doe@example.com
+ *     ChangePasswordInput:
+ *       type: object
+ *       required:
+ *         - currentPassword
+ *         - newPassword
+ *       properties:
+ *         currentPassword:
+ *           type: string
+ *           format: password
+ *           example: CurrentPassword123!
+ *         newPassword:
+ *           type: string
+ *           format: password
+ *           example: NewPassword123!
  *     AuthResponse:
  *       type: object
  *       properties:
@@ -126,6 +155,12 @@ const upload = multer({ storage: multer.memoryStorage() })
  *           example: Profile picture updated successfully
  *         profilePic:
  *           $ref: '#/components/schemas/ProfilePic'
+ *     MessageResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: Password updated successfully
  */
 
 /**
@@ -201,8 +236,67 @@ router.post('/login', authUser)
  *         description: User not found
  *       500:
  *         description: Server error
+ *   put:
+ *     summary: Update user profile details
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserProfileUpdateInput'
+ *     responses:
+ *       200:
+ *         description: User profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfileResponse'
+ *       401:
+ *         description: Unauthorized - Token missing or invalid
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
  */
-router.route('/profile').get(protect, getUserProfile)
+router
+  .route('/profile')
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile)
+
+/**
+ * @openapi
+ * /api/auth/change-password:
+ *   put:
+ *     summary: Change user password
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChangePasswordInput'
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ *       400:
+ *         description: Current password is incorrect
+ *       401:
+ *         description: Unauthorized - Token missing or invalid
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.route('/change-password').put(protect, changeUserPassword)
 
 /**
  * @openapi
