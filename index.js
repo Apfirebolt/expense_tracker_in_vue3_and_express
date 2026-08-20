@@ -11,6 +11,7 @@ import { connectProducer } from "./server/utils/kafkaConnect.js";
 
 import authRoutes from "./server/routes/auth.js";
 import expenseRoutes from "./server/routes/expense.js";
+import contactRoutes from "./server/routes/contact.js";
 import exp from "constants";
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use("/api/auth", authRoutes);
 app.use("/api/expense", expenseRoutes);
+app.use("/api/contact", contactRoutes);
 
 let buildLocation = "client/build";
 
