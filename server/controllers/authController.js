@@ -33,6 +33,7 @@ const authUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user),
+      profilePic: user.profilePic,
     })
   } else {
     res.status(401)

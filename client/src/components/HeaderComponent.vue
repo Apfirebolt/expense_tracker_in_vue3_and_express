@@ -115,7 +115,7 @@
           exact-active-class="bg-gradient-to-r from-red-600 to-orange-500 text-white"
           inactive-class="text-slate-300 hover:bg-slate-900 hover:text-amber-300"
         >
-          Home V
+          Home
         </router-link>
 
         <a href="#about" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-900 hover:text-amber-300 transition-all">About</a>
