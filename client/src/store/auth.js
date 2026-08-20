@@ -32,7 +32,7 @@ export const useAuth = defineStore("auth", {
           router.push("/dashboard");
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.response?.data?.message || "Login failed");
         return error;
       }
     },
@@ -47,80 +47,70 @@ export const useAuth = defineStore("auth", {
           router.push("/dashboard");
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.response?.data?.message || "Registration failed");
         return error;
       }
     },
 
     async getProfileData() {
       try {
-        const headers = {
-          Authorization: `Bearer ${this.authData.token}`,
-        };
+        const headers = { Authorization: `Bearer ${this.authData.token}` };
         const response = await httpClient.get("auth/profile", { headers });
+        if (response.data) {
+          this.authData = { ...this.authData, ...response.data };
+          localStorage.setItem("user", JSON.stringify(this.authData));
+        }
       } catch (error) {
-        console.log(error);
-        return error;
+        console.error(error);
       }
     },
 
     async updateProfileData(profileData) {
       try {
-        const headers = {
-          Authorization: `Bearer ${this.authData.token}`,
-        };
-        const response = await httpClient.put(
-          "auth/profile",
-          profileData,
-          { headers }
-        );
+        const headers = { Authorization: `Bearer ${this.authData.token}` };
+        const response = await httpClient.put("auth/profile", profileData, { headers });
         if (response.data) {
-          this.authData = response.data;
+          this.authData = { ...this.authData, ...response.data };
+          localStorage.setItem("user", JSON.stringify(this.authData));
           toast.success("Profile updated successfully!");
-          localStorage.setItem("user", JSON.stringify(response.data));
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.response?.data?.message || "Failed to update profile");
         return error;
       }
     },
 
-    async updateProfilePicture(profilePicData) {
+    async updateProfilePicture(file) {
       try {
+        const formData = new FormData();
+        formData.append("image", file);
+
         const headers = {
           Authorization: `Bearer ${this.authData.token}`,
+          "Content-Type": "multipart/form-data",
         };
-        const response = await httpClient.put(
-          "auth/profile/picture",
-          profilePicData,
-          { headers }
-        );
+
+        const response = await httpClient.put("auth/profile/pic", formData, { headers });
         if (response.data) {
-          this.authData = response.data;
+          this.authData = { ...this.authData, profilePic: response.data.profilePic };
+          localStorage.setItem("user", JSON.stringify(this.authData));
           toast.success("Profile picture updated successfully!");
-          localStorage.setItem("user", JSON.stringify(response.data));
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.response?.data?.message || "Failed to upload image");
         return error;
       }
     },
 
     async changePassword(passwordData) {
       try {
-        const headers = {
-          Authorization: `Bearer ${this.authData.token}`,
-        };
-        const response = await httpClient.put(
-          "auth/profile/password",
-          passwordData,
-          { headers }
-        );
+        const headers = { Authorization: `Bearer ${this.authData.token}` };
+        const response = await httpClient.put("auth/profile/password", passwordData, { headers });
         if (response.data) {
           toast.success("Password changed successfully!");
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.response?.data?.message || "Failed to change password");
         return error;
       }
     },
@@ -130,10 +120,6 @@ export const useAuth = defineStore("auth", {
       localStorage.removeItem("user");
       router.push("/login");
       toast.success("Logout successful!");
-    },
-
-    resetAuth() {
-      this.authData = {};
     },
   },
 });
