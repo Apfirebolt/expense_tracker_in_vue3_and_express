@@ -89,13 +89,16 @@
               Have questions, feedback, or feature suggestions for Futura? Send us a message and our team will get back to you promptly.
             </p>
             <div class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2 text-xs">
-              <p class="text-amber-400 font-semibold">📍 Fast & Support</p>
+              <p class="text-amber-400 font-semibold">📍 Fast Support</p>
               <p class="text-slate-400">We typically respond to inquiries within 24 hours.</p>
             </div>
           </div>
 
           <!-- Contact Form -->
-          <form class="space-y-4 p-6 bg-slate-950/80 border border-slate-800 rounded-2xl shadow-inner" @submit.prevent>
+          <form 
+            class="space-y-4 p-6 bg-slate-950/80 border border-slate-800 rounded-2xl shadow-inner" 
+            @submit.prevent="handleSubmit"
+          >
             <div>
               <label for="name" class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
                 Name
@@ -104,6 +107,7 @@
                 type="text" 
                 name="name" 
                 id="name"
+                v-model="form.name"
                 placeholder="John Doe"
                 class="w-full px-4 py-3 bg-slate-900 border border-slate-800 focus:border-orange-500 focus:ring-1 focus:ring-amber-400/40 rounded-xl text-slate-100 text-sm focus:outline-none transition-all placeholder-slate-500" 
                 required
@@ -118,6 +122,7 @@
                 type="email" 
                 name="email" 
                 id="email"
+                v-model="form.email"
                 placeholder="name@example.com"
                 class="w-full px-4 py-3 bg-slate-900 border border-slate-800 focus:border-orange-500 focus:ring-1 focus:ring-amber-400/40 rounded-xl text-slate-100 text-sm focus:outline-none transition-all placeholder-slate-500" 
                 required
@@ -132,18 +137,33 @@
                 id="message" 
                 name="message" 
                 rows="4"
+                v-model="form.message"
                 placeholder="How can we help you?"
                 class="w-full px-4 py-3 bg-slate-900 border border-slate-800 focus:border-orange-500 focus:ring-1 focus:ring-amber-400/40 rounded-xl text-slate-100 text-sm focus:outline-none transition-all placeholder-slate-500 resize-none"
                 required
               ></textarea>
             </div>
 
-            <div>
+            <div class="flex items-center space-x-2 pt-1">
+              <input 
+                type="checkbox" 
+                id="isAnonymous" 
+                v-model="form.isAnonymous"
+                class="rounded bg-slate-900 border-slate-800 text-orange-500 focus:ring-0 cursor-pointer"
+              />
+              <label for="isAnonymous" class="text-xs text-slate-400 cursor-pointer select-none">
+                Submit anonymously
+              </label>
+            </div>
+
+            <div class="pt-2">
               <button 
                 type="submit"
-                class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:via-orange-400 hover:to-amber-400 active:scale-[0.99] text-white font-bold text-xs shadow-lg shadow-orange-950/60 transition-all flex items-center justify-center space-x-2 cursor-pointer"
+                :disabled="contactStore.isLoading"
+                class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:via-orange-400 hover:to-amber-400 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-orange-950/60 transition-all flex items-center justify-center space-x-2 cursor-pointer"
               >
-                <span>Send Message</span>
+                <span v-if="contactStore.isLoading">Sending...</span>
+                <span v-else>Send Message</span>
               </button>
             </div>
           </form>
@@ -157,13 +177,41 @@
 </template>
 
 <script setup>
+import { ref, reactive } from 'vue';
 import HeaderComponent from '../components/HeaderComponent.vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination } from 'swiper/modules';
+import { useContact } from '../store/contact';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 
 const modules = [Pagination];
+
+const contactStore = useContact();
+
+const form = reactive({
+  name: '',
+  email: '',
+  message: '',
+  isAnonymous: false,
+});
+
+const handleSubmit = async () => {
+  const res = await contactStore.submitContact({
+    name: form.name,
+    email: form.email,
+    message: form.message,
+    isAnonymous: form.isAnonymous,
+  });
+
+  if (res && res.success) {
+    // Reset form fields on successful submission
+    form.name = '';
+    form.email = '';
+    form.message = '';
+    form.isAnonymous = false;
+  }
+};
 </script>
