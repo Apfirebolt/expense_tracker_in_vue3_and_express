@@ -105,7 +105,7 @@ export const useAuth = defineStore("auth", {
     async changePassword(passwordData) {
       try {
         const headers = { Authorization: `Bearer ${this.authData.token}` };
-        const response = await httpClient.put("auth/profile/password", passwordData, { headers });
+        const response = await httpClient.put("auth/change-password", passwordData, { headers });
         if (response.data) {
           toast.success("Password changed successfully!");
         }
