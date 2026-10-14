@@ -531,7 +531,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { onMounted, computed, ref, watch } from "vue";
 import { useAuth } from "../store/auth";
 import { useExpense } from "../store/expense";
@@ -562,233 +562,175 @@ import {
   MinusIcon,
 } from "@heroicons/vue/solid";
 
-export default {
-  components: {
-    ExpenseForm,
-    ExpenseCalendar,
-    ExpenseChart,
-    Confirm,
-    Dialog,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    TransitionChild,
-    TransitionRoot,
-    ChevronDownIcon,
-    SearchIcon,
-    TrashIcon,
-    PlusIcon,
-    MinusIcon,
-    DialogPanel,
-    FooterComponent,
-  },
-  setup() {
-    const expense = useExpense();
-    const auth = useAuth();
-    const isOpen = ref(false);
-    const viewMode = ref("list");
-    const isDeleteModalOpened = ref(false);
-    const confirmMessage = ref("");
-    const errorMessage = ref("");
-    const selectedItem = ref(null);
-    const currentPage = ref(1);
-    const searchText = ref("");
-    const numberOfItemsPerPage = 5;
+const expense = useExpense();
+const auth = useAuth();
+const isOpen = ref(false);
+const viewMode = ref("list");
+const isDeleteModalOpened = ref(false);
+const confirmMessage = ref("");
+const errorMessage = ref("");
+const selectedItem = ref(null);
+const currentPage = ref(1);
+const searchText = ref("");
+const numberOfItemsPerPage = 5;
 
-    // Native Sorting State
-    const sortKey = ref("createdAt");
-    const sortOrder = ref("desc"); // 'asc' or 'desc'
+// Native Sorting State
+const sortKey = ref("createdAt");
+const sortOrder = ref("desc"); // 'asc' or 'desc'
 
-    function closeModal() {
-      isOpen.value = false;
-    }
-    function openModal() {
-      isOpen.value = true;
-    }
-    function closeDeleteModal() {
-      isDeleteModalOpened.value = false;
-    }
+function closeModal() {
+  isOpen.value = false;
+}
+function openModal() {
+  isOpen.value = true;
+}
+function closeDeleteModal() {
+  isDeleteModalOpened.value = false;
+}
 
-    const allExpenses = computed(() => expense.getExpenses || {});
-    const authData = computed(() => auth.getAuthData);
+const allExpenses = computed(() => expense.getExpenses || {});
+const authData = computed(() => auth.getAuthData);
 
-    // Fuse.js Options for Fuzzy Searching
-    const fuseOptions = {
-      keys: [
-        { name: "description", weight: 0.7 },
-        { name: "type", weight: 0.2 },
-        { name: "amount", weight: 0.1 },
-      ],
-      threshold: 0.35, // Lower = stricter exact match, Higher (e.g. 0.6) = fuzzier
-      ignoreLocation: true, // Finds matches regardless of position in the string
-      minMatchCharLength: 2,
-    };
+// Fuse.js Options for Fuzzy Searching
+const fuseOptions = {
+  keys: [
+    { name: "description", weight: 0.7 },
+    { name: "type", weight: 0.2 },
+    { name: "amount", weight: 0.1 },
+  ],
+  threshold: 0.35,
+  ignoreLocation: true,
+  minMatchCharLength: 2,
+};
 
-    // Memoize the Fuse instance based on expenses data
-    const fuseInstance = computed(() => {
-      const list = allExpenses.value?.data || [];
-      return new Fuse(list, fuseOptions);
+// Memoize the Fuse instance based on expenses data
+const fuseInstance = computed(() => {
+  const list = allExpenses.value?.data || [];
+  return new Fuse(list, fuseOptions);
+});
+
+// Pure JS Filtering & Sorting Computed Property
+const processedExpenses = computed(() => {
+  let list = [];
+
+  // 1. Fuzzy Search via Fuse.js
+  if (searchText.value.trim().length >= 2) {
+    const results = fuseInstance.value.search(searchText.value.trim());
+    list = results.map((result) => result.item);
+  } else {
+    list = [...(allExpenses.value?.data || [])];
+  }
+
+  // 2. Sorting
+  if (sortKey.value) {
+    list.sort((a, b) => {
+      let valA = a[sortKey.value];
+      let valB = b[sortKey.value];
+
+      if (sortKey.value === "amount") {
+        valA = Number(valA) || 0;
+        valB = Number(valB) || 0;
+      } else if (sortKey.value === "createdAt") {
+        valA = new Date(valA).getTime();
+        valB = new Date(valB).getTime();
+      } else if (typeof valA === "string") {
+        valA = valA.toLowerCase();
+        valB = (valB || "").toLowerCase();
+      }
+
+      if (valA < valB) return sortOrder.value === "asc" ? -1 : 1;
+      if (valA > valB) return sortOrder.value === "asc" ? 1 : -1;
+      return 0;
     });
+  }
 
-    // Pure JS Filtering & Sorting Computed Property
-    const processedExpenses = computed(() => {
-      let list = [];
+  return list;
+});
 
-      // 1. Fuzzy Search via Fuse.js
-      if (searchText.value.trim().length >= 2) {
-        const results = fuseInstance.value.search(searchText.value.trim());
-        list = results.map((result) => result.item);
-      } else {
-        list = [...(allExpenses.value?.data || [])];
-      }
+// Sorting Click Handler
+const sort = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
+  } else {
+    sortKey.value = key;
+    sortOrder.value = "asc";
+  }
+};
 
-      // 2. Sorting
-      if (sortKey.value) {
-        list.sort((a, b) => {
-          let valA = a[sortKey.value];
-          let valB = b[sortKey.value];
+// Reset pagination to page 1 on search change
+watch(searchText, () => {
+  currentPage.value = 1;
+});
 
-          if (sortKey.value === "amount") {
-            valA = Number(valA) || 0;
-            valB = Number(valB) || 0;
-          } else if (sortKey.value === "createdAt") {
-            valA = new Date(valA).getTime();
-            valB = new Date(valB).getTime();
-          } else if (typeof valA === "string") {
-            valA = valA.toLowerCase();
-            valB = (valB || "").toLowerCase();
-          }
+onMounted(async () => {
+  AOS.init();
+  await expense.getExpensesAction(currentPage.value);
+});
 
-          if (valA < valB) return sortOrder.value === "asc" ? -1 : 1;
-          if (valA > valB) return sortOrder.value === "asc" ? 1 : -1;
-          return 0;
-        });
-      }
+const addExpenseActionUtil = async (payload) => {
+  if (isNaN(payload.amount)) {
+    errorMessage.value = "Amount should be a number";
+    return;
+  } else {
+    errorMessage.value = "";
+  }
+  await expense.addExpense(payload);
+  closeModal();
+  expense.getExpensesAction(currentPage.value);
+};
 
-      return list;
-    });
+const confirmLogout = async () => {
+  await auth.logout();
+};
 
-    // Sorting Click Handler
-    const sort = (key) => {
-      if (sortKey.value === key) {
-        sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
-      } else {
-        sortKey.value = key;
-        sortOrder.value = "asc";
-      }
-    };
+const showFormattedDate = (date) => {
+  return dayjs(date).format("MMMM DD, YYYY");
+};
 
-    // Reset pagination to page 1 on search change
-    watch(searchText, () => {
-      currentPage.value = 1;
-    });
+const openDeleteModal = (item) => {
+  isDeleteModalOpened.value = true;
+  confirmMessage.value = `Are you sure you want to delete "${item.description}" expense?`;
+  selectedItem.value = item;
+};
 
-    onMounted(async () => {
-      AOS.init();
-      await expense.getExpensesAction(currentPage.value);
-    });
+const confirmDelete = async () => {
+  if (selectedItem.value?._id) {
+    await expense.deleteExpense(selectedItem.value._id);
+    isDeleteModalOpened.value = false;
+    expense.getExpensesAction(currentPage.value);
+  }
+};
 
-    const addExpenseActionUtil = async (payload) => {
-      if (isNaN(payload.amount)) {
-        errorMessage.value = "Amount should be a number";
-        return;
-      } else {
-        errorMessage.value = "";
-      }
-      await expense.addExpense(payload);
-      closeModal();
-      expense.getExpensesAction(currentPage.value);
-    };
+const maxPages = computed(() => allExpenses.value?.lastPage || 1);
+const totalRecords = computed(
+  () => allExpenses.value?.total || processedExpenses.value.length,
+);
 
-    const confirmLogout = async () => {
-      await auth.logout();
-    };
+const goToNextPage = async () => {
+  if (currentPage.value < maxPages.value) {
+    currentPage.value += 1;
+    await expense.getExpensesAction(currentPage.value);
+  }
+};
 
-    const showFormattedDate = (date) => {
-      return dayjs(date).format("MMMM DD, YYYY");
-    };
+const goToPreviousPage = async () => {
+  if (currentPage.value > 1) {
+    currentPage.value -= 1;
+    await expense.getExpensesAction(currentPage.value);
+  }
+};
 
-    const openDeleteModal = (item) => {
-      isDeleteModalOpened.value = true;
-      confirmMessage.value = `Are you sure you want to delete "${item.description}" expense?`;
-      selectedItem.value = item;
-    };
+const showCurrentIndex = computed(() => {
+  if (processedExpenses.value.length === 0) return 0;
+  return (currentPage.value - 1) * numberOfItemsPerPage + 1;
+});
 
-    const confirmDelete = async () => {
-      if (selectedItem.value?._id) {
-        await expense.deleteExpense(selectedItem.value._id);
-        isDeleteModalOpened.value = false;
-        expense.getExpensesAction(currentPage.value);
-      }
-    };
+const showEndIndex = computed(() => {
+  const end = showCurrentIndex.value + processedExpenses.value.length - 1;
+  return end > 0 ? end : 0;
+});
 
-    const maxPages = computed(() => allExpenses.value?.lastPage || 1);
-    const totalRecords = computed(
-      () => allExpenses.value?.total || processedExpenses.value.length,
-    );
-
-    const goToNextPage = async () => {
-      if (currentPage.value < maxPages.value) {
-        currentPage.value += 1;
-        await expense.getExpensesAction(currentPage.value);
-      }
-    };
-
-    const goToPreviousPage = async () => {
-      if (currentPage.value > 1) {
-        currentPage.value -= 1;
-        await expense.getExpensesAction(currentPage.value);
-      }
-    };
-
-    const showCurrentIndex = computed(() => {
-      if (processedExpenses.value.length === 0) return 0;
-      return (currentPage.value - 1) * numberOfItemsPerPage + 1;
-    });
-
-    const showEndIndex = computed(() => {
-      const end = showCurrentIndex.value + processedExpenses.value.length - 1;
-      return end > 0 ? end : 0;
-    });
-
-    const switchViewMode = (mode) => {
-      viewMode.value = mode;
-    };
-
-    return {
-      allExpenses,
-      processedExpenses,
-      authData,
-      isOpen,
-      closeModal,
-      openModal,
-      addExpenseActionUtil,
-      expense,
-      showFormattedDate,
-      openDeleteModal,
-      confirmDelete,
-      closeDeleteModal,
-      isDeleteModalOpened,
-      confirmMessage,
-      selectedItem,
-      confirmLogout,
-      goToNextPage,
-      goToPreviousPage,
-      searchText,
-      numberOfItemsPerPage,
-      currentPage,
-      showCurrentIndex,
-      showEndIndex,
-      totalRecords,
-      maxPages,
-      switchViewMode,
-      viewMode,
-      // Sorting
-      sortKey,
-      sortOrder,
-      sort,
-    };
-  },
+const switchViewMode = (mode) => {
+  viewMode.value = mode;
 };
 </script>
