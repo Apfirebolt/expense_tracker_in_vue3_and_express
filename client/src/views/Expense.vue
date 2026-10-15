@@ -407,6 +407,18 @@
                     </th>
 
                     <th
+                      @click="sort('mode')"
+                      class="px-6 py-4 text-center cursor-pointer hover:text-amber-400 transition-colors"
+                    >
+                      <div class="flex items-center justify-center space-x-1">
+                        <span>Mode</span>
+                        <span v-if="sortKey === 'mode'">{{
+                          sortOrder === "asc" ? "▲" : "▼"
+                        }}</span>
+                      </div>
+                    </th>
+
+                    <th
                       @click="sort('createdAt')"
                       class="px-6 py-4 text-right cursor-pointer hover:text-amber-400 transition-colors"
                     >
@@ -462,6 +474,28 @@
                         "
                       >
                         {{ expense.type }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                      <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider"
+                        :class="
+                          expense.mode === 'Cash'
+                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40'
+                            : expense.mode === 'Credit Card'
+                            ? 'bg-orange-950/60 text-amber-400 border border-orange-800/40'
+                            : expense.mode === 'Online'
+                            ? 'bg-blue-950/60 text-blue-400 border border-blue-800/40'
+                            : expense.mode === 'UPI'
+                            ? 'bg-purple-950/60 text-purple-400 border border-purple-800/40'
+                            : expense.mode === 'Gift Card'
+                            ? 'bg-pink-950/60 text-pink-400 border border-pink-800/40'
+                            : expense.mode === 'Debit Card'
+                            ? 'bg-teal-950/60 text-teal-400 border border-teal-800/40'
+                            : ''
+                        "
+                      >
+                        {{ expense.mode }}
                       </span>
                     </td>
                     <td class="px-6 py-4 text-right text-slate-400">
