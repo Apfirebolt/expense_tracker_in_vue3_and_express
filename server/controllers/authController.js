@@ -22,7 +22,7 @@ const uploadToCloudinary = (buffer) => {
 // @route   POST /api/auth/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body
+  const { email, password, rememberMe } = req.body
 
   const user = await User.findOne({ email })
 
@@ -34,7 +34,7 @@ const authUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user),
-      refreshToken: generateRefreshToken(user),
+      ...(rememberMe && { refreshToken: generateRefreshToken(user) }),
       profilePic: user.profilePic,
     })
   } else {

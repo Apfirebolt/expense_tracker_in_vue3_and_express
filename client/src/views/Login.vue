@@ -79,6 +79,13 @@
 
           <!-- Registration Link -->
           <div class="pt-4 border-t border-slate-800/80 text-center">
+            <!-- Remember me check box -->
+            <div class="flex items-center justify-between mb-4">
+              <label class="flex items-center text-xs text-slate-400">
+                <input type="checkbox" v-model="rememberMe" class="form-checkbox h-4 w-4 text-orange-500" />
+                <span class="ml-2">Remember me</span>
+              </label>
+            </div>
             <p class="text-xs text-slate-400">
               Don't have an account?
               <router-link to="/register" class="font-semibold text-orange-400 hover:text-amber-300 transition-colors ml-1">
@@ -97,13 +104,14 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useAuth } from '../store/auth';
 import { useForm } from 'vee-validate';
 import router from '../routes/index';
 import FooterComponent from '../components/FooterComponent.vue';
 
 const auth = useAuth();
+const rememberMe = ref(false);
 const authData = computed(() => auth.getAuthData);
 
 if (authData.value) {
@@ -129,7 +137,8 @@ function passwordRequired(value) {
 const { defineInputBinds, handleSubmit, errors, isSubmitting } = useForm({
   validationSchema: {
     email: required,
-    password: passwordRequired
+    password: passwordRequired,
+    rememberMe: (value) => true,
   },
 });
 
@@ -140,6 +149,7 @@ const password = defineInputBinds('password');
 // Submit Handler
 const onSubmit = handleSubmit(async (values) => {
   try {
+    values.rememberMe = rememberMe.value;
     await auth.loginAction(values);
     router.push({ name: 'Expense' });
   } catch (error) {
