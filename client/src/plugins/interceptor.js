@@ -6,7 +6,7 @@ import { useToast } from 'vue-toastification';
 const toast = useToast();
 let baseURL = '/api/';
 
-const httpClient = axios.create({ baseURL, withCredentials: true }); // Crucial: allows sending cookies
+const httpClient = axios.create({ baseURL });
 
 // Request interceptor to attach the current access token
 httpClient.interceptors.request.use(
@@ -35,12 +35,21 @@ httpClient.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                // Call your backend refresh token endpoint (sends httpOnly cookie automatically)
-                const response = await axios.post('/api/auth/refresh', {}, { withCredentials: true });
+                // Grab the stored user object from localStorage to get the refresh token
+                const user = JSON.parse(localStorage.getItem('user')) || {};
+
+                if (!user.refreshToken) {
+                    throw new Error('No refresh token available');
+                }
+
+                // Send the refresh token in the request body to match your controller
+                const response = await axios.post('/api/auth/refresh', {
+                    refreshToken: user.refreshToken
+                });
+
                 const newAccessToken = response.data.token;
 
-                // Update local storage / user store with the new access token
-                const user = JSON.parse(localStorage.getItem('user')) || {};
+                // Update local storage with the new access token
                 user.token = newAccessToken;
                 localStorage.setItem('user', JSON.stringify(user));
 
@@ -49,7 +58,7 @@ httpClient.interceptors.response.use(
                 return httpClient(originalRequest);
 
             } catch (refreshError) {
-                // If refresh token is also expired or invalid, force logout
+                // If refresh token is expired or invalid, force logout
                 localStorage.removeItem("user");
                 router.push("/login");
                 toast.error("Session expired. Please log in again.");
