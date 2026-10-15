@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
-import generateToken from '../utils/generateToken.js'
+import jwt from 'jsonwebtoken'
+import { generateToken, generateRefreshToken } from '../utils/generateToken.js'
 import User from '../models/user.js'
 import cloudinary from '../utils/cloudinary.js'
 
@@ -33,6 +34,7 @@ const authUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       token: generateToken(user),
+      refreshToken: generateRefreshToken(user),
       profilePic: user.profilePic,
     })
   } else {
@@ -71,11 +73,47 @@ const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
       userType: user.userType,
-      token: generateToken(user._id),
+      token: generateToken(user),
+      refreshToken: generateRefreshToken(user),
     })
   } else {
     res.status(400)
     throw new Error('Invalid user data')
+  }
+})
+
+// @desc    Refresh access token using a refresh token
+// @route   POST /api/auth/refresh
+// @access  Public
+const refreshToken = asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body
+
+  if (!refreshToken) {
+    res.status(401)
+    throw new Error('Refresh Token is required')
+  }
+
+  try {
+    // 1. Verify the refresh token signature
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+    // 2. Find user by id from payload
+    const user = await User.findById(decoded.id)
+
+    if (!user) {
+      res.status(401)
+      throw new Error('Invalid Refresh Token - User not found')
+    }
+
+    // 3. Generate a brand new access token
+    const newAccessToken = generateToken(user)
+
+    res.status(200).json({
+      token: newAccessToken,
+    })
+  } catch (error) {
+    res.status(403)
+    throw new Error('Invalid or expired refresh token')
   }
 })
 
@@ -196,6 +234,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 export {
   authUser,
   registerUser,
+  refreshToken,
   getUserProfile,
   updateUserProfilePic,
   changeUserPassword,
