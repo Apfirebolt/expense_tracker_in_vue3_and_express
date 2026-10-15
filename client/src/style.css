@@ -69,3 +69,11 @@ body {
 h1, h2, h3 {
     font-family: 'Raleway', sans-serif;
 }
+
+/* Fix for html2canvas oklab color parsing error */
+@media print {
+  *, ::before, ::after {
+    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

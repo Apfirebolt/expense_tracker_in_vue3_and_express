@@ -201,7 +201,7 @@
       </TransitionRoot>
 
       <!-- MAIN CONTENT SECTION -->
-      <main class="flex-1 mt-6 space-y-6">
+      <main ref="pdfContainer" class="flex-1 mt-6 space-y-6">
         <!-- PAGE HEADER / BALANCE SUMMARY CARD -->
         <div
           class="bg-slate-900/80 border border-orange-900/40 shadow-2xl backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-orange-950/40"
@@ -233,6 +233,26 @@
 
             <!-- Action Controls -->
             <div class="flex items-center space-x-3">
+              <button
+                type="button"
+                @click="exportToPDF"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-400/50 transition-all cursor-pointer flex items-center space-x-1.5"
+              >
+                <svg
+                  class="w-4 h-4 text-amber-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <span>Export PDF</span>
+              </button>
               <button
                 type="button"
                 @click="switchViewMode('calendar')"
@@ -483,16 +503,16 @@
                           expense.mode === 'Cash'
                             ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40'
                             : expense.mode === 'Credit Card'
-                            ? 'bg-orange-950/60 text-amber-400 border border-orange-800/40'
-                            : expense.mode === 'Online'
-                            ? 'bg-blue-950/60 text-blue-400 border border-blue-800/40'
-                            : expense.mode === 'UPI'
-                            ? 'bg-purple-950/60 text-purple-400 border border-purple-800/40'
-                            : expense.mode === 'Gift Card'
-                            ? 'bg-pink-950/60 text-pink-400 border border-pink-800/40'
-                            : expense.mode === 'Debit Card'
-                            ? 'bg-teal-950/60 text-teal-400 border border-teal-800/40'
-                            : ''
+                              ? 'bg-orange-950/60 text-amber-400 border border-orange-800/40'
+                              : expense.mode === 'Online'
+                                ? 'bg-blue-950/60 text-blue-400 border border-blue-800/40'
+                                : expense.mode === 'UPI'
+                                  ? 'bg-purple-950/60 text-purple-400 border border-purple-800/40'
+                                  : expense.mode === 'Gift Card'
+                                    ? 'bg-pink-950/60 text-pink-400 border border-pink-800/40'
+                                    : expense.mode === 'Debit Card'
+                                      ? 'bg-teal-950/60 text-teal-400 border border-teal-800/40'
+                                      : ''
                         "
                       >
                         {{ expense.mode }}
@@ -575,6 +595,7 @@ import ExpenseForm from "../components/ExpenseForm.vue";
 import FooterComponent from "../components/FooterComponent.vue";
 import Confirm from "../components/Confirm.vue";
 import ExpenseCalendar from "../components/ExpenseCalendar.vue";
+import { useToast } from "vue-toastification";
 import ExpenseChart from "../components/ExpenseChart.vue";
 import AOS from "aos";
 
@@ -596,6 +617,7 @@ import {
   MinusIcon,
 } from "@heroicons/vue/solid";
 
+const toast = useToast();
 const expense = useExpense();
 const auth = useAuth();
 const isOpen = ref(false);
@@ -606,6 +628,7 @@ const errorMessage = ref("");
 const selectedItem = ref(null);
 const currentPage = ref(1);
 const searchText = ref("");
+const pdfContainer = ref(null);
 const numberOfItemsPerPage = 5;
 
 // Native Sorting State
@@ -635,6 +658,76 @@ const fuseOptions = {
   threshold: 0.35,
   ignoreLocation: true,
   minMatchCharLength: 2,
+};
+
+const exportToPDF = async () => {
+  // Robustly import html2pdf (module shape differs between bundlers)
+  let html2pdf;
+  try {
+    const mod = await import("html2pdf.js");
+    html2pdf = mod?.default || mod?.html2pdf || mod;
+  } catch (e) {
+    console.error("Failed to import html2pdf:", e);
+    toast.error("Failed to load PDF generator");
+    return;
+  }
+
+  const element = pdfContainer.value || document.querySelector("main");
+
+  if (!element) {
+    toast.error("Export container not found");
+    return;
+  }
+
+  // Inject a temporary CSS override to avoid html2canvas parsing "oklab" color functions
+  // which some Tailwind/generated CSS can emit and which html2canvas doesn't support.
+  const styleId = "html2pdf-oklab-fix";
+  let injectedStyle = document.getElementById(styleId);
+  if (!injectedStyle) {
+    injectedStyle = document.createElement("style");
+    injectedStyle.id = styleId;
+    injectedStyle.textContent = `
+      /* html2canvas workaround: force simple solid colors to avoid oklab parsing */
+      #${element.id} *, #${element.id} {
+        color: #e6edf3 !important;
+        background-color: #020617 !important;
+        border-color: rgba(124,45,18,0.12) !important;
+        box-shadow: none !important;
+        filter: none !important;
+      }
+      /* Fallback if container has no id - apply lightweight universal overrides scoped at print time */
+      @media print {
+        * { color-adjust: exact; -webkit-print-color-adjust: exact; }
+      }
+    `;
+    document.head.appendChild(injectedStyle);
+  }
+
+  const options = {
+    margin:       10,
+    filename:     `Expense_Report_${dayjs().format("YYYY-MM-DD")}.pdf`,
+    image:        { type: "jpeg", quality: 0.98 },
+    html2canvas:  {
+      // start conservative; increase if higher-res is needed
+      scale: 1,
+      useCORS: true,
+      backgroundColor: "#020617",
+      logging: false,
+    },
+    jsPDF:        { unit: "mm", format: "a4", orientation: "portrait" },
+  };
+
+  try {
+    await html2pdf().from(element).set(options).save();
+    toast.success("PDF exported successfully!");
+  } catch (error) {
+    console.error("PDF export failed:", error);
+    toast.error("Failed to generate PDF");
+  } finally {
+    // cleanup injected style
+    const s = document.getElementById(styleId);
+    if (s) s.remove();
+  }
 };
 
 // Memoize the Fuse instance based on expenses data
