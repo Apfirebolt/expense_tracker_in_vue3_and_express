@@ -7,11 +7,13 @@ import {
   updateUserProfile,
   changeUserPassword,
   updateUserProfilePic,
+  refreshToken,
 } from '../controllers/authController.js'
 import { protect } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 const upload = multer({ storage: multer.memoryStorage() })
+
 
 /**
  * @openapi
@@ -214,6 +216,26 @@ router.route('/register').post(registerUser)
  *         description: Server error
  */
 router.post('/login', authUser)
+
+/**
+ * @openapi
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Access token refreshed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       401:
+ *         description: Refresh token missing or invalid
+ *       500:
+ *         description: Server error
+ */
+router.post('/refresh', refreshToken);
 
 /**
  * @openapi
