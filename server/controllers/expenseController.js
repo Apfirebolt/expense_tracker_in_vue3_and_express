@@ -40,10 +40,11 @@ const getUserExpenses = asyncHandler(async (req, res) => {
 // @route   POST /api/expense
 // @access  Private - User
 const createExpense = asyncHandler(async (req, res) => {
-  const { amount, type, description } = req.body;
+  const { amount, type, description, mode } = req.body;
 
   const expense = await Expense.create({
     amount,
+    mode,
     type,
     description,
     user: req.user._id,
@@ -56,7 +57,8 @@ const createExpense = asyncHandler(async (req, res) => {
     const kafkaData = {
       user_id: req.user._id,
       amount: expense.amount,
-      type: 'Expense',
+      mode: expense.mode,
+      type: expense.type,
       description: expense.description,
       createdAt: expense.createdAt,
     }
@@ -86,6 +88,7 @@ const updateExpense = asyncHandler(async (req, res) => {
     expense.amount = req.body.amount || expense.amount;
     expense.description = req.body.description || expense.description;
     expense.type = req.body.type || expense.type;
+    expense.mode = req.body.mode || expense.mode;
     const updatedExpense = await expense.save();
 
     res.json(updatedExpense);

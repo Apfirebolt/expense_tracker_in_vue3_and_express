@@ -54,6 +54,27 @@
         </div>
       </div>
 
+      <!-- Expense Mode-->
+      <div>
+        <label for="mode" class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
+          Expense Mode
+        </label>
+        <div class="relative">
+          <select 
+            id="mode" 
+            name="mode" 
+            v-model="mode" 
+            required
+            class="w-full px-4 py-3 bg-slate-950 border border-slate-800 focus:border-orange-500 focus:ring-1 focus:ring-amber-400/40 rounded-xl text-slate-100 text-sm focus:outline-none transition-all cursor-pointer"
+          >
+            <option value="" disabled class="bg-slate-900 text-slate-500">Select Mode</option>
+            <option v-for="option in modeOptions" :key="option.value" :value="option.value" class="bg-slate-900 text-slate-200">
+              {{ option.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
       <!-- Expense Type -->
       <div>
         <label for="type" class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">
@@ -115,6 +136,7 @@ const props = defineProps({
 const amount = ref('');
 const description = ref('');
 const type = ref('');
+const mode = ref('');
 const emits = defineEmits(['addExpenseAction', 'closeModal']);
 
 const typeOptions = [
@@ -122,12 +144,22 @@ const typeOptions = [
   { name: 'Debit', value: 'debit' }
 ];
 
+const modeOptions = [
+  { name: 'Cash', value: 'Cash' },
+  { name: 'Credit Card', value: 'Credit Card' },
+  { name: 'Online', value: 'Online' },
+  { name: 'UPI', value: 'UPI' },
+  { name: 'Gift Card', value: 'Gift Card' },
+  { name: 'Debit Card', value: 'Debit Card' }
+];
+
 const handleSubmit = async (e) => {
   e.preventDefault();
   let payload = {
     amount: amount.value,
     description: description.value,
-    type: type.value
+    type: type.value,
+    mode: mode.value
   };
   emits('addExpenseAction', payload);
 };  
@@ -136,6 +168,7 @@ const closeModalUtil = () => {
   amount.value = '';
   description.value = '';
   type.value = '';
+  mode.value = '';
   emits('closeModal');
 };
 </script>

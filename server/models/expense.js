@@ -1,6 +1,8 @@
 
 import mongoose from "mongoose";
 
+const modeTypes = ["Cash", "Credit Card", "Online", "UPI", "Gift Card", "Debit Card"];
+
 const expenseSchema = new mongoose.Schema({
   amount: {
     type: Number,
@@ -13,6 +15,11 @@ const expenseSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true
+  },
+  mode: {
+    type: String,
+    required: true,
+    enum: modeTypes
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
